@@ -1,12 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    >
-<TextView  
-    android:layout_width="fill_parent" 
-    android:layout_height="wrap_content" 
-    android:text="@string/hello"
-    />
-</LinearLayout>
+<RelativeLayout
+android:id="@+id/widget33"
+android:layout_width="fill_parent"
+android:layout_height="fill_parent"
+xmlns:android="http://schemas.android.com/apk/res/android"
+>
+<TableLayout
+android:id="@+id/widget37"
+android:layout_width="fill_parent"
+android:layout_height="fill_parent"
+android:orientation="vertical"
+android:stretchColumns="1"
+android:layout_alignParentTop="true"
+android:layout_alignParentLeft="true"
+>
+<TableRow
+android:id="@+id/widget57"
+android:layout_width="fill_parent"
+android:layout_height="wrap_content"
+android:orientation="horizontal"
+>
+<TextView
+android:id="@+id/widget59"
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+android:text="Email:"
+>
+</TextView>
+<EditText
+android:id="@+id/widget61"
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+android:textSize="18sp"
+>
+</EditText>
+</TableRow>
+<TableRow
+android:id="@+id/widget58"
+android:layout_width="fill_parent"
+android:layout_height="wrap_content"
+android:orientation="horizontal"
+>
+<TextView
+android:id="@+id/widget60"
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+android:text="TextView"
+>
+</TextView>
+<EditText
+android:id="@+id/widget63"
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+android:textSize="18sp"
+android:password="true"
+>
+</EditText>
+</TableRow>
+</TableLayout>
+<Button
+android:id="@+id/widget66"
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+android:text="Login"
+android:layout_alignParentBottom="true"
+android:layout_alignParentRight="true"
+>
+</Button>
+</RelativeLayout>
