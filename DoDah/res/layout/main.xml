@@ -1,70 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
+ 
+<!--
+ Application Name: Generic Login Screen for the Android Platform (GUI)
+ Description: This is a generic login screen which catches the username and password values
+ Created on: November 23, 2007
+ Created by: Pogz Ortile
+ Contact: pogz(at)redhat(dot)polarhome(dot)com
+ Notes: The username_text is the written text and the txt_username is the textbox. Same goes for the password
+                You are free to distribute, modify, and wreck for all I care. GPL ya!
+-->
+ 
 <RelativeLayout
-android:id="@+id/widget33"
-android:layout_width="fill_parent"
-android:layout_height="fill_parent"
-xmlns:android="http://schemas.android.com/apk/res/android"
->
-<TableLayout
-android:id="@+id/widget37"
-android:layout_width="fill_parent"
-android:layout_height="fill_parent"
-android:orientation="vertical"
-android:stretchColumns="1"
-android:layout_alignParentTop="true"
-android:layout_alignParentLeft="true"
->
-<TableRow
-android:id="@+id/widget57"
-android:layout_width="fill_parent"
-android:layout_height="wrap_content"
-android:orientation="horizontal"
->
-<TextView
-android:id="@+id/widget59"
-android:layout_width="wrap_content"
-android:layout_height="wrap_content"
-android:text="Email:"
->
-</TextView>
-<EditText
-android:id="@+id/widget61"
-android:layout_width="wrap_content"
-android:layout_height="wrap_content"
-android:textSize="18sp"
->
-</EditText>
-</TableRow>
-<TableRow
-android:id="@+id/widget58"
-android:layout_width="fill_parent"
-android:layout_height="wrap_content"
-android:orientation="horizontal"
->
-<TextView
-android:id="@+id/widget60"
-android:layout_width="wrap_content"
-android:layout_height="wrap_content"
-android:text="TextView"
->
-</TextView>
-<EditText
-android:id="@+id/widget63"
-android:layout_width="wrap_content"
-android:layout_height="wrap_content"
-android:textSize="18sp"
-android:password="true"
->
-</EditText>
-</TableRow>
-</TableLayout>
-<Button
-android:id="@+id/loginButton"
-android:layout_width="wrap_content"
-android:layout_height="wrap_content"
-android:text="Login"
-android:layout_alignParentBottom="true"
-android:layout_alignParentRight="true"
->
-</Button>
+        xmlns:android="http://schemas.android.com/apk/res/android"
+   android:orientation="horizontal"
+   android:layout_width="fill_parent"
+   android:layout_height="fill_parent"
+   >
+   
+    <TextView android:id="@+id/welcome_text"
+        android:text = "Welcome to My Application!n"           
+        android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+        />
+       
+    <TextView android:id="@+android:id/username_text"
+        android:text = "username:"  
+        android:layout_centerHorizontal="true"  
+        android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/welcome_text"
+        />
+   
+    <EditText android:id="@+id/txt_username"
+             android:layout_height="wrap_content"
+             android:layout_width="250px"
+             android:layout_centerHorizontal="true"
+             android:layout_below="@+id/username_text"
+             android:singleLine="true" />
+             
+             
+    <TextView android:id="@+id/password_text"
+        android:text = "password:"  
+        android:layout_centerHorizontal="true"  
+        android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/txt_username"
+        />
+   
+    <EditText android:id="@+id/txt_password"
+                  android:password="true"
+             android:layout_height="wrap_content"
+             android:layout_width="250px"
+             android:layout_centerHorizontal="true"
+             android:layout_below="@+id/password_text"
+             android:singleLine="true" />
+   
+        <Button android:id="@+id/login_button"
+                android:text="Login!"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/txt_password"
+                />
+               
 </RelativeLayout>
