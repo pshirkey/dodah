@@ -1,0 +1,21 @@
+application: glyphr
+version: 1
+runtime: python
+api_version: 1
+
+- url: /xd_receiver.htm
+  static_files: xd_receiver.htm
+  upload: xd_receiver.htm
+  
+- url: /css
+  static_dir: css
+
+- url: /images
+  static_dir: images 
+  
+- url: /javascript
+  static_dir: javascript
+    
+- url: /workspace.*
+  script: worksoace.py  
+  login: admin

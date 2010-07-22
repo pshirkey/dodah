@@ -9,5 +9,6 @@
 	<classpathentry kind="lib" path="lib/jackson-mapper-asl-1.5.4.jar"/>
 	<classpathentry kind="lib" path="lib/dom4j-1.6.1.jar"/>
 	<classpathentry kind="lib" path="lib/google-collect-snapshot-20090211.jar"/>
+	<classpathentry kind="lib" path="lib/droid-fu-1.0-SNAPSHOT.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
