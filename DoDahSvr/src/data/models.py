@@ -3,6 +3,7 @@ from google.appengine.ext.db import polymodel
 import os
 import datetime
 import pytz
+import hashlib
 
 class Pacific_tzinfo(datetime.tzinfo):
     """Implementation of the Pacific timezone."""
@@ -112,7 +113,7 @@ class User(db.Model):
         testuser = User.get_by_key_name("test@example.com")
         if not testuser:
             testuser = User(key_name=str("test@example.com"),
-                                id=str(999999),
+                                fb_uid=str(999999),
                                 first_name="Testy",
                                 last_name="McTestington",
                                 profile_url="wwww.facebook.com",
@@ -127,6 +128,7 @@ class User(db.Model):
             testuser.newsletter = True
             testuser.thirdparty = False
             testuser.customerProfileId = None
+            testuser.password=hashlib.md5("salsa").hexdigest()
             testuser.put()
             
         return testuser
@@ -149,12 +151,15 @@ class Category(db.Model):
     updated = db.DateTimeProperty(auto_now=True)
     name = db.StringProperty(required=True)
     description = db.TextProperty()
-    parent = db.SelfReferenceProperty(collection_name='sub_categories')
+    parent_category = db.SelfReferenceProperty(collection_name='sub_categories')
+    
+    def __str__(self):
+        return self.name
     
 class Location(db.Model):
     created = db.DateTimeProperty(auto_now_add=True)
     updated = db.DateTimeProperty(auto_now=True)
-    owner = db.ReferenceProperty(User, required=True)
+    owner = db.ReferenceProperty(User)
     name = db.StringProperty()
     category = db.ReferenceProperty(Category)
     description = db.TextProperty()
@@ -163,8 +168,12 @@ class Location(db.Model):
     state = db.StringProperty()
     zip = db.StringProperty()
     country = db.StringProperty()
-    phonenumber = db.StringProperty()
+    phone_number = db.StringProperty()
     geo = db.GeoPtProperty()
+    rating = db.RatingProperty()
+    
+    def get_address(self):
+        return "%s %s, %s %s" % ( self.address, self.city, self.state, self.zip )
     
 class Image(db.Model):
     created = db.DateTimeProperty(auto_now_add=True)
@@ -177,9 +186,11 @@ class Item(db.Model):
     updated = db.DateTimeProperty(auto_now=True)
     location = db.ReferenceProperty(Location, required=True, collection_name='items')
     code = db.StringProperty(required=True)
-    name = db.StringProperty()
-    details = db.TextProperty()
+    difficulty = db.FloatProperty(default=100.0)
+    name = db.StringProperty(default="")
+    details = db.TextProperty(default="")
     found_user = db.ReferenceProperty(User, collection_name='found_items')
+    redeemed = db.BooleanProperty(default=False)
     expires = db.DateTimeProperty()
     
     

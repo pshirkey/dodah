@@ -3,6 +3,8 @@ version: 1
 runtime: python
 api_version: 1
 
+handlers:
+
 - url: /xd_receiver.htm
   static_files: xd_receiver.htm
   upload: xd_receiver.htm
@@ -16,6 +18,10 @@ api_version: 1
 - url: /javascript
   static_dir: javascript
     
-- url: /workspace.*
-  script: worksoace.py  
-  login: admin
+- url: /login.*
+  script: workspace.py
+  secure: always
+  
+- url: /.*
+  script: workspace.py
+  secure: never
