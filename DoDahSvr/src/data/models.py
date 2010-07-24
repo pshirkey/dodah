@@ -114,6 +114,7 @@ class User(db.Model):
     newsletter = db.BooleanProperty()
     thirdparty = db.BooleanProperty()
     fullname = db.StringProperty()
+    follow = db.SelfReferenceProperty(collection_name='followers')
     
     @classmethod 
     def get_test_user(cls):
@@ -180,6 +181,13 @@ class Location(geomodel.GeoModel):
     
     def get_address(self):
         return "%s %s, %s %s" % ( self.address, self.city, self.state, self.zip )
+    
+class UserActivity(db.Model):
+    created = db.DateTimeProperty(auto_now_add=True)
+    updated = db.DateTimeProperty(auto_now=True)
+    user = db.ReferenceProperty(User, collection_name="activity")
+    location = db.Reference(Location, collection_name="user_activitiy")
+    details = db.StringProperty()    
     
 class Image(db.Model):
     created = db.DateTimeProperty(auto_now_add=True)
