@@ -121,7 +121,7 @@ class Locations(Base):
 class LocationForm(djangoforms.ModelForm):
     class Meta:
         model = models.Location
-        exclude = ( 'rating', 'items', 'updated', 'created', 'meta', '_class', 'create_ts', 'modify_ts', 'edited_by',)
+        exclude = ( 'rating', 'geoboxes', 'items', 'updated', 'created', 'meta', '_class', 'create_ts', 'modify_ts', 'edited_by',)
         category = forms.ModelChoiceField(queryset=models.Category.all())
         description = forms.CharField(widget=forms.Textarea(attrs={'cols': 130, 'rows': 20}))
         
@@ -166,10 +166,7 @@ class SaveLocation(Base):
             entity = locForm.save(commit=True)
             entity.owner = self.current_user
             entity.save() 
-            id = entity.key()
-            self.write('saved')     
-        else:
-            self.write('not saved' )
+            id = entity.key()   
         
         template_values = {
                                'loc':entity,
@@ -243,7 +240,7 @@ class LoadTestData(Base):
         subcat = models.Category(name="Coffee House", description="", parent_category=cat)
         subcat.put()
         
-        red = models.Location(owner=self.current_user)
+        red = models.Location(owner=self.current_user, location=db.GeoPt(37, -122))
         red.address = "310 SW 3rd Street"
         red.name = "Red Horse"
         red.description = "Red Horse Coffee"

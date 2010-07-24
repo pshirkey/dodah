@@ -4,6 +4,10 @@ import os
 import datetime
 import pytz
 import hashlib
+import logging
+import math
+from geo import geomodel
+
 
 class Pacific_tzinfo(datetime.tzinfo):
     """Implementation of the Pacific timezone."""
@@ -156,7 +160,7 @@ class Category(db.Model):
     def __str__(self):
         return self.name
     
-class Location(db.Model):
+class Location(geomodel.GeoModel):
     created = db.DateTimeProperty(auto_now_add=True)
     updated = db.DateTimeProperty(auto_now=True)
     owner = db.ReferenceProperty(User)
@@ -169,7 +173,6 @@ class Location(db.Model):
     zip = db.StringProperty()
     country = db.StringProperty()
     phone_number = db.StringProperty()
-    geo = db.GeoPtProperty()
     rating = db.RatingProperty()
     
     def get_address(self):
