@@ -18,6 +18,10 @@ import lilcookies
 import hashlib
 import django.newforms as forms
 import random
+from googlemaps import GoogleMaps
+
+
+METERS_IN_MILE = 1609.344
 
 class Base(webapp.RequestHandler):
     
@@ -114,14 +118,13 @@ class Locations(Base):
     url = "/locations"
     template = "locations.html"
     
-    def do_post(self):
-        
+    def do_post(self):        
         self.generate(Locations.template, { 'locations':models.Location.all() })
 
 class LocationForm(djangoforms.ModelForm):
     class Meta:
         model = models.Location
-        exclude = ( 'rating', 'geoboxes', 'items', 'updated', 'created', 'meta', '_class', 'create_ts', 'modify_ts', 'edited_by',)
+        exclude = ( 'rating', 'location','location_geocells', 'items', 'updated', 'created', 'meta', '_class', 'create_ts', 'modify_ts', 'edited_by',)
         category = forms.ModelChoiceField(queryset=models.Category.all())
         description = forms.CharField(widget=forms.Textarea(attrs={'cols': 130, 'rows': 20}))
         
@@ -163,10 +166,14 @@ class SaveLocation(Base):
         else:
             locForm = LocationForm(data=self.request.POST)        
         if locForm.is_valid():
-            entity = locForm.save(commit=True)
+            entity = locForm.save(commit=False)
             entity.owner = self.current_user
             entity.save() 
-            id = entity.key()   
+            id = entity.key()
+            gmaps = GoogleMaps(self.enviroment.google_maps_key)   
+            lat, lng = gmaps.address_to_latlng(entity.get_address())
+            entity.update_location(db.GeoPt(lat, lng))
+            entity.save()
         
         template_values = {
                                'loc':entity,
@@ -213,6 +220,29 @@ class GenerateItems(Base):
                 item = models.Item(key_name=code, location=loc, code=code)
                 item.put()
         self.redirect(EditLocation.get_url(id))
+        
+class FindLocations(Base):
+    
+    url = "/findlocations"
+    template_name = "findlocations.html"
+    
+    def do_post(self):
+        
+        address = self.param('address')
+        miles = self.param('miles')
+        max_results = self.param('max_results')
+        if not max_results:
+            max_results = 10
+        values = { 'address':address, 'max_results':max_results,'miles':miles }
+        if address and miles:
+            gmaps = GoogleMaps(self.enviroment.google_maps_key)   
+            lat, lng = gmaps.address_to_latlng(address)
+            geoPoint = db.GeoPt(lat, lng)
+            meters = float(miles) * METERS_IN_MILE        
+            locations = models.Location.proximity_fetch( models.Location.all(), geoPoint, int(max_results), meters )
+            values['locations'] = locations
+        
+        self.generate(FindLocations.template_name, values)
 
 class Index(Base):
     
@@ -267,7 +297,8 @@ application = webapp.WSGIApplication([
                                        (EditLocation.url, EditLocation),
                                        (SaveLocation.url, SaveLocation),
                                        (SaveItem.url,SaveItem),
-                                       (GenerateItems.url, GenerateItems)                                  
+                                       (GenerateItems.url, GenerateItems),
+                                       (FindLocations.url,FindLocations)                                 
                                      ], debug=True)
 
 

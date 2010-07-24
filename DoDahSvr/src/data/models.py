@@ -47,6 +47,7 @@ class Environment(db.Model):
     system_time_zone = db.StringProperty(default='US/Pacific')
     cookie_secret = db.StringProperty()
     email_from = db.StringProperty()
+    google_maps_key = db.StringProperty()
      
     @classmethod
     def create(cls, 
@@ -57,7 +58,8 @@ class Environment(db.Model):
                external_url, 
                site_name, 
                cookie_secret,
-               email_from):
+               email_from,
+               maps_key):
         env = Environment(
                           server=server,
                           appid=appid,
@@ -66,7 +68,8 @@ class Environment(db.Model):
                           external_url=external_url,
                           site_name=site_name,
                           cookie_secret=cookie_secret,
-                          email_from=email_from)
+                          email_from=email_from,
+                          google_maps_key=maps_key)
         env.put()
         return env
     
@@ -74,8 +77,8 @@ class Environment(db.Model):
     def load(cls):
         for e in Environment.all():
             e.delete()
-        qa = Environment.create("tim.romanowski", "264305057809", "71dbd7ab6e61dd3f834aea08cafd9984", "bb9eaf43ba0c730d21995d18eb007fe5", "http://qa.dodah.com", site_name="DoDah", cookie_secret='A18A0990-8B87-11DF-857E-2AE6DFD72085E885076E-8B87-11DF-9B3C-78E6DFD72085', email_from='noreply@dodah.com')    
-        localhost = Environment.create("localhost", "266627909278", "c05d825b7ea4e060350658421c322070", "c1a12b8e45a63d5c764601b63caa113a", "http://localhost:8080", site_name="DoDah", cookie_secret='B1DEAEAE-8B87-11DF-AC7F-2CE6DFD72085F7D71C52-8B87-11DF-BF0C-7EE6DFD72085', email_from='noreply@dodah.com')
+        qa = Environment.create("tim.romanowski", "264305057809", "71dbd7ab6e61dd3f834aea08cafd9984", "bb9eaf43ba0c730d21995d18eb007fe5", "http://qa.dodah.com", site_name="DoDah", cookie_secret='A18A0990-8B87-11DF-857E-2AE6DFD72085E885076E-8B87-11DF-9B3C-78E6DFD72085', email_from='noreply@dodah.com', maps_key="ABQIAAAAqJ8cnMoiSiWcwMV1Z0Sy0xR4EqRj3RNZnoYuzojShxUjcPQKRRRIg5eMJehIfcuV")    
+        localhost = Environment.create("localhost", "266627909278", "c05d825b7ea4e060350658421c322070", "c1a12b8e45a63d5c764601b63caa113a", "http://localhost:8080", site_name="DoDah", cookie_secret='B1DEAEAE-8B87-11DF-AC7F-2CE6DFD72085F7D71C52-8B87-11DF-BF0C-7EE6DFD72085', email_from='noreply@dodah.com', maps_key="ABQIAAAAqJ8cnMoiSiWcwMV1Z0Sy0xR4EqRj3RNZnoYuzojShxUjcPQKRRRIg5eMJehIfcuV")
 
     @classmethod
     def get_for_current_environment(cls, server=None):

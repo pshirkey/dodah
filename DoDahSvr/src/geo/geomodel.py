@@ -34,7 +34,7 @@ import geomath
 import geotypes
 import util
 
-DEBUG = False
+DEBUG = True
 
 
 def default_cost_function(num_cells, resolution):
@@ -49,15 +49,17 @@ class GeoModel(db.Model):
     location: A db.GeoPt that defines the single geographic point
         associated with this entity.
   """
-  location = db.GeoPtProperty(required=True)
+  location = db.GeoPtProperty(required=True,default=db.GeoPt(37, -122))
   location_geocells = db.StringListProperty()
 
-  def update_location(self):
+  def update_location(self, location=None):
     """Syncs underlying geocell properties with the entity's location.
 
     Updates the underlying geocell properties of the entity to match the
     entity's location property. A put() must occur after this call to save
     the changes to App Engine."""
+    if location:
+        self.location = location
     max_res_geocell = geocell.compute(self.location)
     self.location_geocells = [max_res_geocell[:res]
                               for res in
