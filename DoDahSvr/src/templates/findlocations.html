@@ -1,0 +1,50 @@
+{% extends "master.html" %}
+
+{% block content %}
+<div>
+	<form action="/findlocations" method="post">
+		<div><label for"address">Address:</label><input type="text" name="address" id="address" {% if address %} value="{{ address}}" {% endif %} /></div>
+		<div><label for"miles">Miles:</label><select name="miles" id="miles">
+			<option value="10" selected="selected">10</option>
+			<option value="20">20</option>
+			<option value="40">40</option>
+			<option value="80">80</option>
+			<option value="100">100</option>
+		</select></div>
+		<div><label for"max_results">Max Results:</label><select name="max_results" id="max_results">
+            <option value="10" selected="selected">10</option>
+            <option value="20">20</option>
+            <option value="40">40</option>
+            <option value="80">80</option>
+            <option value="100">100</option>
+        </select></div>
+		<div><input type="submit" value="Search"/></div>
+	</form>
+</div>
+<div>
+    <table cellpadding="10" cellspacing="10">
+    <tr>
+    <th>Name</th>
+    <th>Address</th>
+    <th>Geo</th>
+    <th>DoDads</th>
+    <th>User Rating</th>
+    <th>Created</th>
+    </tr>
+    {% for loc in locations %}
+    <tr>
+        <td><a href="/editlocation?id={{ loc.key }}">{{ loc.name }}</td>
+        <td>{{ loc.get_address }}</td>
+        <td>{{ loc.geo }}</td>
+        {% if loc.items %}
+        <td>{{ loc.items.count }}</td>
+        {% else %}
+        <td>&nbsp;</td>
+        {% endif %}
+        <td>{{ loc.rating }}</td>
+        <td>{{ loc.created|date:"D d M Y"}}</td>
+    </tr>
+    {% endfor %}
+    </table>
+</div>
+{% endblock %}
