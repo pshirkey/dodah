@@ -1,0 +1,36 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:fb="http://www.facebook.com/2008/fbml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>{{ title }}</title>
+<link href="/css/styles.css" rel="stylesheet" type="text/css" />
+{% for meta in metatags %}
+<meta property="{{ meta.name }}" content="{{ meta.value }}"/>
+{% endfor %}
+
+</head>
+<body>
+ <div class="content">
+ 	
+ <div class="pageContent">
+ 	{% if current_user %}
+	<h1>Hello {{ current_user.name }}</h1>
+ 	<div class="hovermenu">
+<ul>
+<li><a href="/">Home</a></li>
+<li><a href="/locations">My Locations</a></li>
+<li><a href="/findlocations">Search Locations</a></li>
+<li><a href="/logout">Logout</a></li>
+</ul>
+</div>
+{% endif %}
+ 	{%block content%}{%endblock%}
+ </div>
+ </div>
+</body>
+
+<div class="footer">
+   <a href="/about">About</a>|<a href="/contact">Contact</a>|<a href="/privacy">Privacy</a>|<a href="/terms">Terms</a>
+</div>
+		
+ </html>
