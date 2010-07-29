@@ -55,6 +55,11 @@ class Base(webapp.RequestHandler):
         
         if 'current_user' not in values.keys():
             values['current_user'] = self.current_user
+        if 'site_name' not in values.keys():
+            values['site_name'] = self.enviroment.site_name
+        if 'site_url' not in values.keys():
+            values['site_url'] = self.enviroment.external_url
+        
         
         ROOT_PATH = os.path.dirname(__file__)
         path = os.path.join(ROOT_PATH + self.template_path, str(fileIn))
@@ -274,19 +279,36 @@ class SignUp(Base):
         self.generate(SignUp.template_name, values)
         
         
-class UserForm(djangoforms.ModelForm):
-    class Meta:
-        model = models.User
-        exclude = ( 'rating', 'location','location_geocells', 'items', 'updated', 'created', 'meta', '_class', 'create_ts', 'modify_ts', 'edited_by',)
-        category = forms.ModelChoiceField(queryset=models.Category.all())
-        description = forms.CharField(widget=forms.Textarea(attrs={'cols': 130, 'rows': 20}))
-
 class Profile(Base):
     
     url = "/profile"
     template_name = "profile.html"
     
     def do_post(self):
+        id = self.request.get('xjf')
+        if id:
+            self.current_user.first_name = self.request.get('first_name')
+            self.current_user.last_name = self.request.get('last_name')
+            self.current_user.email_address = self.request.get('email')
+            self.current_user.address = self.request.get('address')
+            self.current_user.city = self.request.get('city')
+            self.current_user.state = self.request.get('state')
+            self.current_user.zip = self.request.get('zip')
+            self.current_user.country = self.request.get('country')
+            self.current_user.phone_number = self.request.get('phone_number')
+            newsletter = self.request.get('newsletter')
+            thirdparty = self.request.get('thirdparty')
+            if newsletter:
+                self.current_user.newsletter = True
+            else:
+                self.current_user.newsletter = False
+            
+            if thirdparty:
+                self.current_user.thirdparty = True
+            else:
+                self.current_user.thirdparty = False;
+            self.current_user.save()
+            
         self.generate(Profile.template_name, None)
         
 class About(Base):

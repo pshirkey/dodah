@@ -141,10 +141,9 @@ class User(db.Model):
     state = db.StringProperty()
     zip = db.StringProperty()
     country = db.StringProperty()
-    phonenumber = db.StringProperty() 
+    phone_number = db.StringProperty() 
     newsletter = db.BooleanProperty()
     thirdparty = db.BooleanProperty()
-    fullname = db.StringProperty()
     
     @classmethod
     def create(cls, first_name, last_name, email, password):

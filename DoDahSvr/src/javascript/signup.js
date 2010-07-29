@@ -30,9 +30,9 @@
 			}
 		},
 		onkeyup: false,
-		submitHandler: function() {
+		submitHandler: function(form) {
 			$("div.error").hide();
-			alert("submit! use link below to go to the other step");
+			form.submit();
 		},
 		messages: {
 			password2: {
