@@ -10,20 +10,24 @@
 
 </head>
 <body>
- <div class="content">
- 	
- <div class="pageContent">
- 	{% if current_user %}
-	<h1>Hello {{ current_user.name }}</h1>
- 	<div class="hovermenu">
-<ul>
-<li><a href="/">Home</a></li>
-<li><a href="/locations">My Locations</a></li>
-<li><a href="/findlocations">Search Locations</a></li>
-<li><a href="/logout">Logout</a></li>
-</ul>
-</div>
-{% endif %}
+	<div id="header">
+      <div class="outsideContainer">
+        {% if current_user %}
+		<ul id="topNav">
+            <li><a style="color:#5A5858" href="/profile">{{ current_user.name }}</a></li>
+			<li><a href="/">Home</a></li>
+            <li><a href="/locations">My Locations</a></li>
+            <li><a href="/findlocations">Search Locations</a></li>
+            <li style="border-right-style: none; border-right-width: initial; border-right-color: initial; "><a href="/logout">Logout</a></li>
+        </ul>  
+		{% endif %}
+        <a href="/" id="logo"><img src="/images/logo.png"></a>
+        
+      </div>
+    </div>
+	
+ <div class="content"> 	
+ <div style="width:820px;margin-left:auto;margin-right:auto;margin-top:75px;" id="pageContent">
  	{%block content%}{%endblock%}
  </div>
  </div>

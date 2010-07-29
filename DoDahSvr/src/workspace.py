@@ -243,6 +243,64 @@ class FindLocations(Base):
             values['locations'] = locations
         
         self.generate(FindLocations.template_name, values)
+        
+        
+class UserForm(djangoforms.ModelForm):
+    class Meta:
+        model = models.User
+        exclude = ( 'rating', 'location','location_geocells', 'items', 'updated', 'created', 'meta', '_class', 'create_ts', 'modify_ts', 'edited_by',)
+        category = forms.ModelChoiceField(queryset=models.Category.all())
+        description = forms.CharField(widget=forms.Textarea(attrs={'cols': 130, 'rows': 20}))
+
+class Profile(Base):
+    
+    url = "/profile"
+    template_name = "profile.html"
+    
+    def do_post(self):
+        self.generate(Profile.template_name, None)
+        
+class About(Base):
+    
+    url = "/about"
+    template_name = "about.html"
+    
+    def post(self):
+        self.generate(About.template_name, None)
+        
+class Privacy(Base):
+    
+    url = "/privacy"
+    template_name = "privacy.html"
+    
+    def post(self):
+        self.generate(Privacy.template_name, None)
+        
+class HowItWorks(Base):
+    
+    url = "/howitworks"
+    template_name = "howitworks.html"
+    
+    def post(self):
+        self.generate(HowItWorks.template_name, None)
+        
+class ContactUs(Base):
+    
+    url = "/contact"
+    template_name = "contactus.html"
+    
+    def post(self):
+        self.generate(ContactUs.template_name, None)
+        
+class Terms(Base):
+    
+    url = "/terms"
+    template_name = "terms.html"
+    
+    def post(self):
+        self.generate(Terms.template_name, None)
+        
+        
 
 class Index(Base):
     
@@ -298,7 +356,13 @@ application = webapp.WSGIApplication([
                                        (SaveLocation.url, SaveLocation),
                                        (SaveItem.url,SaveItem),
                                        (GenerateItems.url, GenerateItems),
-                                       (FindLocations.url,FindLocations)                                 
+                                       (FindLocations.url,FindLocations),
+                                       (Profile.url, Profile),
+                                       (About.url, About),
+                                       (HowItWorks.url, HowItWorks),
+                                       (ContactUs.url, ContactUs),
+                                       (Privacy.url, Privacy),
+                                       (Terms.url, Terms)                           
                                      ], debug=True)
 
 

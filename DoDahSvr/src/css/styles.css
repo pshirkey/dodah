@@ -1,40 +1,237 @@
 body {
-    background-color:#7AFFFF;
-    font-family:Arial, Helvetica, sans-serif;
-    font-size: .9em;
-    color: #474747;
+  font-family: Helvetica, Verdana, Arial, sans-serif;
+  font-size: 13px;
+  color: #5a5858;
+  background-color: #FFFFFF;
+  margin: 0;
 }
 
-.hovermenu ul{
-font: bold 13px arial;
-padding-left: 0;
-margin-left: 0;
-height: 20px;
-width:660px;
+div {
+  margin: 0;
+  padding: 0;
 }
 
-.hovermenu ul li{
-list-style: none;
-display: inline;
+h1.big {
+  color:#555555;
+  font-size:36px;
+  font-height: bold;
+  margin: 0px;
 }
 
-.hovermenu ul li a{
-padding: 2px 0.5em;
-text-decoration: none;
-float: left;
-color: black;
-background-color: #e1e1e1; /* You Can Change this color */
-border: 2px solid #e1e1e1; /*You can change this color*/
+h3.header {
+  font-size: 14px;
+  line-height: 19px;
+  color: #555555;
+  margin-top: 10px;
 }
 
-.hovermenu ul li a:hover{
-background-color: #e5e5e5; /*You Can Change This Color*/
-border-style: outset;
+img {
+  border: 0;
 }
 
-html>body .hovermenu ul li a:active{ /* Apply mousedown effect only to NON IE browsers */
-border-style: inset;
+form {
+  display: inline;
+  margin: 0;
+  padding: 0;
 }
+
+table {
+  border-collapse: collapse;
+}
+
+th, td {
+  padding: 0;
+}
+
+:focus {
+ outline: 0;
+}
+
+div#container {
+  margin-left: auto;
+  margin-right: auto;
+  width: 948px;
+  position: relative;
+}
+
+.outsideContainer {
+  margin-left: auto;
+  margin-right: auto;
+  width: 865px;
+  position: relative;
+}
+
+/* LOGGED IN HEADER ELEMENTS */
+
+#header {
+  height: 93px;
+  width: 100%;
+  background-color: #EEEEEE;
+}
+
+#header #topNav {
+  background-color:#E5E5E5;
+  float:left;
+  margin:0;
+  padding:0;
+  border:1px solid #CCCCCC;
+  min-height: 29px;
+  
+  -moz-border-radius-bottomleft:5px;
+  -moz-border-radius-bottomright:5px;
+  -webkit-border-bottom-left-radius:5px;
+  -webkit-border-bottom-right-radius:5px;
+}
+
+#header #topNav li {
+  border-left:1px solid #CCCCCC;
+  border-right:1px solid #FFFFFF;
+  float:left;
+  font-size:12px;
+  margin:6px 0;
+  padding:2px 8px;
+  list-style: none;
+}
+
+#header #topNav li:first-child {
+  border-left: none;
+  font-weight: bold;
+  position: relative;
+}
+
+#header #topNav li.withImage {
+  padding-left: 35px;
+}
+
+#header #topNav li:last-child {
+  border-right: none;
+}
+
+#header #topNav li a {
+  color:#3AA9D6;
+  text-shadow:0px 0 2px #FFFFFF;
+}
+
+#header #topNav img {
+  height:23px;
+  left:6px;
+  position:absolute;
+  top:-4px;
+  width:23px;
+}
+
+#header #bottom {
+  
+}
+
+#header #logo {
+  left:5px;
+  position:absolute;
+  top:36px;
+}
+
+#searchbox {
+  position: absolute;
+  top: 44px;
+  right: 0px;
+}
+
+#header #searchEntry {
+  border:1px solid #CCCCCC;
+  float:left;
+  font-size:12px;
+  margin:3px;
+  padding:5px;
+  color: #555555;
+  width: 160px;
+  
+  -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+}
+
+#header #searchButton {
+  position: relative;
+  top: 5px;
+}
+
+#login {
+  min-height:400px;
+}
+
+#login form {
+  -moz-border-radius:10px 10px 10px 10px;
+  -webkit-border-radius:10px 10px 10px 10px;
+  background-color:#F9F8F7;
+  border:1px solid #CCCCCC;
+  display:block;
+  margin:0 auto;
+  padding:20px;
+  width:450px;
+  overflow: hidden;
+  margin-top: 30px;
+}
+
+#login h2 {
+  color:#444444;
+  font-size:22px;
+  font-weight:bold;
+  left:5px;
+  margin-bottom:25px;
+  position:relative;
+}
+
+#login #fb_login_form {
+  border:medium none;
+  padding:0;
+  position:absolute;
+  right:221px;
+  top:38px;
+  width:200px;
+}
+
+#login label {
+  display:block;
+  float:left;
+  position:relative;
+  text-align:right;
+  top:8px;
+  width:145px;
+}
+
+#login .section input {
+  margin-left:15px;
+  padding:5px;
+  width:272px;
+  font-size: 12px;
+}
+
+#login .section a {
+  display:block;
+  font-weight:normal;
+  left:160px;
+  position:relative;
+  top:5px;
+}
+
+#login .button {
+  float:right;
+}
+
+div.section {
+  margin: 0 0 20px 0;
+}
+
+div.section_content {
+  margin: 5px 0 5px 0;
+}
+
+div.section_title {
+  font-size : 24px;
+  color : #888888;
+  line-height: 20pt;
+  border-bottom: 1px solid #888888;
+}
+
 
 .content {
     display: inline; 
@@ -47,16 +244,6 @@ border-style: inset;
 	margin-left: auto;
     margin-right: auto;
     width: 960px;
-}
-
-.pageContent {
-	background-color: #FFFFFF;
-    padding: 30px 20px;
-    margin-top: 10px;
-    min-width:0;
-	margin-left: auto;
-    margin-right: auto;
-    width: 660px;
 }
 
 .footer {
