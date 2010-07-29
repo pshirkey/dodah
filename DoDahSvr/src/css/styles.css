@@ -232,6 +232,22 @@ div.section_title {
   border-bottom: 1px solid #888888;
 }
 
+.locations{
+	padding:0px;
+	margin-left: auto;
+    margin-right: auto;
+    width: 960px;
+}
+
+.locations.table{
+	border-collapse:collapse;
+}
+.locations.table, td, th
+{
+    border:1px solid black;
+	text-align:center;
+}
+
 
 .content {
     display: inline; 
