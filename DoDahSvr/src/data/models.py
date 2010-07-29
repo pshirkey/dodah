@@ -149,10 +149,15 @@ class User(db.Model):
     def create(cls, first_name, last_name, email, password):
         u = User(key_name=email, first_name=first_name, last_name=last_name, email_address=email, password=password)
         u.put()
+        return u
         
     @classmethod
     def email_exists(cls, email):
-        return ( not User.get_by_key_name(email))
+        user = User.get_by_key_name(email)
+        if user:
+            return True
+        else:
+            return False
     
     @classmethod 
     def get_test_user(cls):

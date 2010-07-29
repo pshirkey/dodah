@@ -62,6 +62,31 @@
 		<div><input type="submit" class="button" value="Save"></div>	
 		<div>{{ message }}</div>
 	</form>	
+	<h1>Facebook account</h1>
+	{% if current_user.fb_access_token %}
+	<h2>Connect this account with your facebook account</h2>
+	<p>This account is connected to</p>
+	<div class="user">
+                	<div class="img">
+                    	<a href="{{ current_user.fb_profile_url }}"><img src="https://graph.facebook.com/{{ current_user.fb_uid }}/picture?type=square"/></a>
+                    </div>
+    </div>
+	{% else %}
+	<h2>Connect this account with your facebook account</h2>
+	<fb:login-button autologoutlink="true"  perms="email,user_birthday,status_update,publish_stream"></fb:login-button>
+    {% endif %}
+
+<script>
+document.getElementById('fb-login').onclick = function() {
+  FB.login(function(response) {
+    if (response.session) {
+      document.getElementById('fb-login').innerHTML = "<span id='fb_login_text' class='fb_button_text'>Logout</span>";
+    } else {
+      document.getElementById('fb-login').innerHTML = "<span id='fb_login_text' class='fb_button_text'>Connect with Facebook</span>";
+    }
+  });
+};
+</script>
 </div>
 
 {% endblock %}

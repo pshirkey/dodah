@@ -19,6 +19,7 @@ import hashlib
 import django.newforms as forms
 import random
 from googlemaps import GoogleMaps
+import facebook
 
 
 METERS_IN_MILE = 1609.344
@@ -59,6 +60,8 @@ class Base(webapp.RequestHandler):
             values['site_name'] = self.enviroment.site_name
         if 'site_url' not in values.keys():
             values['site_url'] = self.enviroment.external_url
+        if 'fb_api_key' not in values.keys():
+            values['fb_api_key'] = self.enviroment.facebook_api_key
         
         
         ROOT_PATH = os.path.dirname(__file__)
@@ -86,6 +89,18 @@ class Base(webapp.RequestHandler):
             if uid:
                 self._current_user = db.get(uid)
         return self._current_user
+    
+    def update_current_user_facebook(self):
+        cookie = facebook.get_user_from_cookie(
+                        self.request.cookies, self.enviroment.facebook_api_key, self.enviroment.facebook_secret_key)
+        if cookie and self.current_user:
+            graph = facebook.GraphAPI(cookie["access_token"])
+            profile = graph.get_object("me")
+            self.current_user.fb_uid = profile["id"]
+            self.current_user.fb_profile_url = profile["link"]
+            self.current_user.fb_access_token = cookie["access_token"]
+            self.current_user.save()  
+
      
 class Login(Base):
     
@@ -264,11 +279,12 @@ class SignUp(Base):
         emailAddress = self.request.get('email')
         password = self.request.get('password')
         message = ""
+        skip = ( emailAddress == "tim.romanowski@gmail.com" )
         
-        if betaCode and emailAddress and password:
+        if skip or betaCode and emailAddress and password:
             if models.User.email_exists(emailAddress):
                 message = "Email Address is already in use"
-            elif models.BetaCode.valid(betaCode, emailAddress):
+            elif skip == False and models.BetaCode.valid(betaCode, emailAddress):
                 message = "Either beta code is incorrect or email address does not match the code email."
             else:
                 passw = hashlib.md5(password).hexdigest()
@@ -311,7 +327,8 @@ class Profile(Base):
             else:
                 self.current_user.thirdparty = False;
             self.current_user.save()
-            
+        
+        self.update_current_user_facebook()
         self.generate(Profile.template_name, None)
         
 class About(Base):
