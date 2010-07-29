@@ -81,6 +81,7 @@
     <th>Value</th>
     <th>Details</th>
 	<th>Difficulty</th>
+	<th>Active</th>
     <th>Found</th>
     <th>Redeemed</th>    
 	<th>Expires</th>
@@ -91,11 +92,12 @@
         <form action="/saveitem" action="post">
         	<input type="hidden" name="id" id="id" value="{{ item.key }}"/>
 			<input type="hidden" name="locid" id="locid" value="{{ loc.key }}"/>
-        	<td>{{ item.created|date:"D d M Y" }}</td>
+        	<td>{{ item.created|date:"m/d/Y" }}</td>
 			<td>{{ item.code }}</td>
 			<td><input type="text" name="name" value="{{ item.name }}"></td>
 			<td><textarea name="details">{{ item.details }}</textarea></td>
 			<td><input type="text" name="difficulty" maxlength="3" value="{{ item.difficulty }}"/></td>
+			<td><input type='checkbox' name="active" id='active' {% if item.active %} checked="yes" {% endif %}  name='news' value='1' /></td>
 			{% if item.found_user %}
 			<td>Yes</td>
 			{% else %}
@@ -106,7 +108,7 @@
             {% else %}
             <td>No</td>
             {% endif %}
-			<td>{{ item.expires|date:"D d M Y" }}</td>
+			<td>{{ item.expires|date:"m/d/Y" }}</td>
 			<td><input type="submit" value="Save"/></td>			
         </form> 
     </tr>

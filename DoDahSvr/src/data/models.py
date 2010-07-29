@@ -231,12 +231,13 @@ class Item(db.Model):
     updated = db.DateTimeProperty(auto_now=True)
     location = db.ReferenceProperty(Location, required=True, collection_name='items')
     code = db.StringProperty(required=True)
-    difficulty = db.FloatProperty(default=100.0)
+    difficulty = db.FloatProperty(default=10.0)
     name = db.StringProperty(default="")
     details = db.TextProperty(default="")
     found_user = db.ReferenceProperty(User, collection_name='found_items')
     redeemed = db.BooleanProperty(default=False)
-    expires = db.DateTimeProperty()
+    expires = db.DateProperty()
+    active = db.BooleanProperty(default=False)
     
     
             

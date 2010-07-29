@@ -214,6 +214,9 @@ class GenerateItems(Base):
         num = 5
         loc = db.get(id)
         if loc:
+            oneMonth = datetime.timedelta(days=30)
+            today = datetime.date.today()
+            expires = today + oneMonth
             if number:
                 num = int(number)
             for i in range(1, int(num)):
@@ -222,7 +225,7 @@ class GenerateItems(Base):
                 while item:
                     code = self._create_item_code()
                     item = models.Item.get_by_key_name(code)
-                item = models.Item(key_name=code, location=loc, code=code)
+                item = models.Item(key_name=code, location=loc, code=code, expires=expires)
                 item.put()
         self.redirect(EditLocation.get_url(id))
         
