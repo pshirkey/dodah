@@ -334,9 +334,9 @@ class Terms(Base):
 class Index(Base):
     
     url = "/"    
-    template_name = "usermenu.html"
+    template_name = "index.html"
     
-    def do_post(self):
+    def post(self):
         self.generate(Index.template_name, None)
         
 class LoadTestData(Base):
