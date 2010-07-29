@@ -1,28 +1,28 @@
 {% extends "master.html" %}
 
 {% block content %}
-<div>
+<div class="maincolumn" id="searchlocations">
 	<form action="/findlocations" method="post">
-		<div><label for"address">Address:</label><input type="text" name="address" id="address" {% if address %} value="{{ address}}" {% endif %} /></div>
-		<div><label for"miles">Miles:</label><select name="miles" id="miles">
+		<div class="section"><label for"address">Address:</label><input type="text" name="address" id="address" {% if address %} value="{{ address}}" {% endif %} /></div>
+		<div class="section"><label for"miles">Miles:</label><select name="miles" id="miles">
 			<option value="10" selected="selected">10</option>
 			<option value="20">20</option>
 			<option value="40">40</option>
 			<option value="80">80</option>
 			<option value="100">100</option>
 		</select></div>
-		<div><label for"max_results">Max Results:</label><select name="max_results" id="max_results">
+		<div class="section"><label for"max_results">Max Results:</label><select name="max_results" id="max_results">
             <option value="10" selected="selected">10</option>
             <option value="20">20</option>
             <option value="40">40</option>
             <option value="80">80</option>
             <option value="100">100</option>
         </select></div>
-		<div><input type="submit" value="Search"/></div>
+		<div class="section"><input class="button" type="submit" value="Search"/></div>
 	</form>
-</div>
-<div>
-    <table cellpadding="10" cellspacing="10">
+
+<div style="margin-left:auto;margin-right:auto;margin-top:75px;">
+    <table cellpadding="10" cellspacing="10" width="100%">
     <tr>
     <th>Name</th>
     <th>Address</th>
@@ -46,5 +46,6 @@
     </tr>
     {% endfor %}
     </table>
+</div>
 </div>
 {% endblock %}

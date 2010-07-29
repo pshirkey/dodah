@@ -8,12 +8,8 @@
 
     <body>
         {% extends "master.html" %} {% block content %} 
-
-        <div>
-            Create or Edit a Location
-        </div>
-
-        <div class="form">
+		<div class="maincolumn" id="searchlocations">
+        
         	<div class="errors">
         		<ol>
 			    {% for error in form.errors %}
@@ -22,59 +18,63 @@
 			    </ol>
         	</div>
             <form name="locform" action="/savelocation" method="post">
-                <input type="hidden" name="id" value="{{loc.key}}">
+               <h1>
+            Create or Edit a Location
+        </h1>
+				 <input type="hidden" name="id" value="{{loc.key}}">
 				
-                <div class="fieldWrapper">
+                <div class="section">
                     {{ form.name.errors }}
 					<label for="id_name">Name:</label>
 					{{ form.name }}
                 </div>
-				<div class="fieldWrapper">
+				<div class="section">
                     {{ form.category.errors }}
                     <label for="id_category">Category:</label>
                     {{ form.category }}
                 </div>
-				<div class="fieldWrapper">
+				<div class="section">
                     {{ form.description.errors }}
                     <label for="id_description">Description:</label>
                     {{ form.description }}
                 </div>
-				<div class="fieldWrapper">
+				<div class="section">
                     {{ form.address.errors }}
                     <label for="id_address">Address:</label>
                     {{ form.address }}
                 </div>
-				<div class="fieldWrapper">
+				<div class="section">
                     {{ form.city.errors }}
                     <label for="id_city">City:</label>
                     {{ form.address }}
                 </div>
-				<div class="fieldWrapper">
+				<div class="section">
                     {{ form.state.errors }}
                     <label for="id_state">State:</label>
                     {{ form.state }}
                 </div>
-				<div class="fieldWrapper">
+				<div class="section">
                     {{ form.zip.errors }}
                     <label for="id_zip">Zip:</label>
                     {{ form.zip }}
                 </div>
-				<div class="fieldWrapper">
+				<div class="section">
                     {{ form.country.errors }}
                     <label for="id_country">Country:</label>
                     {{ form.country }}
                 </div>
-				<div class="fieldWrapper">
+				<div class="section">
                     {{ form.phone_number.errors }}
                     <label for="id_phone_number">Phone Number:</label>
                     {{ form.phone_number }}
                 </div>
 				<div><input type="submit" value="Save"/></div>
             </form>
-        </div>
         {% if loc %} 
+		
+		<div style="margin-left:auto;margin-right:auto;margin-top:75px;">
 		<h1>DoDads</h1>
-		<table cellpadding="10" cellspacing="10" border="1">
+    <table cellpadding="10" cellspacing="10" width="100%">
     <tr>
     <th>Created</th>
     <th>Code</th>

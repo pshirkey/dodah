@@ -180,15 +180,6 @@ div#container {
   position:relative;
 }
 
-#login #fb_login_form {
-  border:medium none;
-  padding:0;
-  position:absolute;
-  right:221px;
-  top:38px;
-  width:200px;
-}
-
 #login label {
   display:block;
   float:left;
@@ -214,6 +205,60 @@ div#container {
 }
 
 #login .button {
+  float:right;
+}
+
+#searchlocations {
+  min-height:400px;
+}
+
+#searchlocations form {
+  -moz-border-radius:10px 10px 10px 10px;
+  -webkit-border-radius:10px 10px 10px 10px;
+  background-color:#F9F8F7;
+  border:1px solid #CCCCCC;
+  display:block;
+  margin:0 auto;
+  padding:20px;
+  width:450px;
+  overflow: hidden;
+  margin-top: 30px;
+}
+
+#searchlocations h2 {
+  color:#444444;
+  font-size:22px;
+  font-weight:bold;
+  left:5px;
+  margin-bottom:25px;
+  position:relative;
+}
+
+#searchlocations label {
+  display:block;
+  float:left;
+  position:relative;
+  text-align:right;
+  top:8px;
+  width:145px;
+}
+
+#searchlocations .section input,#searchlocations .section textarea,#searchlocations .section select {
+  margin-left:15px;
+  padding:5px;
+  width:272px;
+  font-size: 12px;
+}
+
+#searchlocations .section a {
+  display:block;
+  font-weight:normal;
+  left:160px;
+  position:relative;
+  top:5px;
+}
+
+#searchlocations .button {
   float:right;
 }
 
