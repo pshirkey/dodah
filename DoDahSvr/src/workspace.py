@@ -244,6 +244,35 @@ class FindLocations(Base):
         
         self.generate(FindLocations.template_name, values)
         
+class SignUp(Base):
+    
+    url = "/signup"
+    template_name = "signup.html"
+    
+    def post(self):
+        betaCode = self.request.get('betacode')
+        first_name = self.request.get('first_name')
+        last_name = self.request.get('last_name')
+        emailAddress = self.request.get('email')
+        password = self.request.get('password')
+        message = ""
+        
+        if betaCode and emailAddress and password:
+            if models.User.email_exists(emailAddress):
+                message = "Email Address is already in use"
+            elif models.BetaCode.valid(betaCode, emailAddress):
+                message = "Either beta code is incorrect or email address does not match the code email."
+            else:
+                passw = hashlib.md5(password).hexdigest()
+                user = models.User.create(first_name, last_name, emailAddress, passw)
+                if user:
+                    self.redirect(Index.url)
+                else:
+                    message = "Unable to create account"
+            
+        values = {'betacode':betaCode, 'first_name':first_name,'last_name':last_name, 'email':emailAddress, 'message':message}
+        self.generate(SignUp.template_name, values)
+        
         
 class UserForm(djangoforms.ModelForm):
     class Meta:
@@ -362,7 +391,8 @@ application = webapp.WSGIApplication([
                                        (HowItWorks.url, HowItWorks),
                                        (ContactUs.url, ContactUs),
                                        (Privacy.url, Privacy),
-                                       (Terms.url, Terms)                           
+                                       (Terms.url, Terms),
+                                       (SignUp.url, SignUp)                           
                                      ], debug=True)
 
 

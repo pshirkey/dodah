@@ -2,7 +2,7 @@
 
 {% block content %}
 
-<div class="mainColumn" id="login">
+<div class="mainColumn" id="someform">
 	<form action="/login" method="post">
 		<h1>Login</h1>
         <div class="section">
@@ -14,8 +14,9 @@
 			<input type="password" name="password" />
 		</div>		
 		<div><input type="submit" class="button" value="Login"></div>	
+		<div>{{ message }}</div>
 	</form>
-	<div>{{ message }}</div>
+	
 </div>
 
 

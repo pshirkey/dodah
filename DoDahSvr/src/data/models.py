@@ -6,6 +6,7 @@ import pytz
 import hashlib
 import logging
 import math
+import random
 from geo import geomodel
 
 
@@ -93,7 +94,37 @@ class Environment(db.Model):
                 Environment.load()
                 return Environment.gql("WHERE server=:svr", svr=server).get()
         return toReturn
+
+# Beta program
+#
+class BetaCode(db.Model):
+
+    created = db.DateTimeProperty(auto_now_add=True)
+    updated = db.DateTimeProperty(auto_now=True)
+    name = db.StringProperty()
+    code = db.StringProperty()
+    email = db.EmailProperty()
+    lastAccess = db.DateTimeProperty()
     
+    @classmethod
+    def create(cls, name, email):
+        bcode = BetaCode.gql("WHERE email=:1", email).get()
+        if not bcode:
+            alphabet = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'
+            code = "".join(random.sample(alphabet,8))
+            bcode = BetaCode.get_by_key_name(code)
+            while bcode:
+                code = "".join(random.sample(alphabet,8))
+                bcode = BetaCode.get_by_key_name(code)
+            bcode = BetaCode(key_name=code, name=name, email=email)
+            bcode.put()
+        return bcode
+    
+    @classmethod
+    def valid(cls, code, email):
+        bcode = BetaCode.get_by_key_name(code)
+        return (bcode is not None and bcode.email==email)
+       
 class User(db.Model):
     created = db.DateTimeProperty(auto_now_add=True)
     updated = db.DateTimeProperty(auto_now=True)
@@ -114,6 +145,15 @@ class User(db.Model):
     newsletter = db.BooleanProperty()
     thirdparty = db.BooleanProperty()
     fullname = db.StringProperty()
+    
+    @classmethod
+    def create(cls, first_name, last_name, email, password):
+        u = User(key_name=email, first_name=first_name, last_name=last_name, email_address=email, password=password)
+        u.put()
+        
+    @classmethod
+    def email_exists(cls, email):
+        return ( not User.get_by_key_name(email))
     
     @classmethod 
     def get_test_user(cls):
