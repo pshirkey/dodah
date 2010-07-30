@@ -5,6 +5,7 @@
     <div class="locations">
     <table cellpadding="10" cellspacing="10" width="100%">
     <tr>
+    <th>&nbsp;</th>
     <th>Name</th>
 	<th>Address</th>
 	<th>Geo</th>
@@ -14,9 +15,10 @@
 	</tr>
 	{% for loc in locations %}
 	<tr>
+		<td><img src="{{ loc.get_thumbnail_url }}"/></td>
 		<td><a href="/editlocation?id={{ loc.key }}">{{ loc.name }}</td>
 		<td>{{ loc.get_address }}</td>
-		<td>{{ loc.geo }}</td>
+		<td>{{ loc.location.lat}},{{ loc.location.lon }}</td>
 		{% if loc.items %}
 		<td>{{ loc.items.count }}</td>
 		{% else %}

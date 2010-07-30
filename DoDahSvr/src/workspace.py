@@ -407,9 +407,14 @@ class LoadTestData(Base):
         red.city = "Corvallis"
         red.state = "OR"
         red.zip = "97333"
+        red.county = "USER"
         red.phone_number = "(541) 757-3025"
         red.rating = 99
         red.put()
+        gmaps = GoogleMaps(self.enviroment.google_maps_key)   
+        lat, lng = gmaps.address_to_latlng(red.get_address())
+        red.update_location(db.GeoPt(lat, lng))
+        red.save()
         
         
         
