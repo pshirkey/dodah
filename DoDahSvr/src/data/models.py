@@ -227,7 +227,7 @@ class Location(geomodel.GeoModel):
     
     def get_thumbnail_url(self):
         if self.location:
-            return "http://maps.google.com/maps/api/staticmap?center=%s,%s&size=400x400&sensor=false&zoom=12&&maptype=hybrid&markers=color:blue|label:X|%s,%s" % ( self.location.lat, self.location.lon, self.location.lat, self.location.lon )
+            return "http://maps.google.com/maps/api/staticmap?center=%s,%s&size=200x200&sensor=false&zoom=17&&maptype=roadmap&markers=color:blue|label:X|%s,%s" % ( self.location.lat, self.location.lon, self.location.lat, self.location.lon )
     
 class Image(db.Model):
     created = db.DateTimeProperty(auto_now_add=True)
