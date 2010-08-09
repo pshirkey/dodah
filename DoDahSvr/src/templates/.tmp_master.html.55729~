@@ -1,0 +1,69 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:fb="http://www.facebook.com/2008/fbml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>{{ title }}</title>
+<link href="/css/styles.css" rel="stylesheet" type="text/css" />
+{% for meta in metatags %}
+<meta property="{{ meta.name }}" content="{{ meta.value }}"/>
+{% endfor %}
+<script src="http://code.jquery.com/jquery-latest.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
+		
+</head>
+<body>
+	<div id="header">
+      <div class="outsideContainer">
+       <a href="/" id="logo"><img src="/images/logo.png"></a> 
+      </div>
+    </div>
+	<div id="nav">
+      <div class="outsideContainer">
+        <ul id="mainNav">        	
+			{% if not current_user %}
+            <li><a href="/signup">Join DoDah!</a></li>
+			 <li><a href="/login">Login</a></li>
+			{% else %}
+			 <li><a style="color:#5A5858" href="/profile">{{ current_user.name }}</a></li>
+			<li><a href="/">Home</a></li>
+            <li><a href="/locations">My Locations</a></li>
+            <li><a href="/findlocations">Search Locations</a></li>
+            <li style="border-right-style: none; border-right-width: initial; border-right-color: initial; "><a href="/logout">Logout</a></li>
+     		{% endif %}
+        </ul>        
+      </div>
+    </div>
+ <div class="content"> 	
+ <div style="width:820px;margin-left:auto;margin-right:auto;margin-top:75px;" id="pageContent">
+ 	{%block content%}{%endblock%}
+ </div>
+ </div>
+
+
+<div class="footer">
+   <a href="/about">About</a>|<a href="/contact">Contact</a>|<a href="/privacy">Privacy</a>|<a href="/terms">Terms</a>
+</div>
+<div id="fb-root"></div>
+			    <script>			   
+			      window.fbAsyncInit = function() {
+			        FB.init({appId: '{{ fb_api_key }}', status: true, cookie: true,
+			                 xfbml: true},  '/xd_receiver.html' );
+					 FB.Event.subscribe('{% if current_user %}auth.logout{% else %}auth.login{% endif %}', function(response) {
+			          window.location.reload();
+			        });
+			      };
+			      (function() {
+			        var e = document.createElement('script');
+			        e.type = 'text/javascript';
+			        e.src = document.location.protocol + '//connect.facebook.net/en_US/all.js';
+			        e.async = true;
+			        document.getElementById('fb-root').appendChild(e);
+			      }());
+
+			      
+			    </script>
+				</div>	
+
+</body>
+		
+ </html>
