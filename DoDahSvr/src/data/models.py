@@ -149,10 +149,15 @@ class User(db.Model):
     def create(cls, first_name, last_name, email, password):
         u = User(key_name=email, first_name=first_name, last_name=last_name, email_address=email, password=password)
         u.put()
+        return u
         
     @classmethod
     def email_exists(cls, email):
-        return ( not User.get_by_key_name(email))
+        user = User.get_by_key_name(email)
+        if user:
+            return True
+        else:
+            return False
     
     @classmethod 
     def get_test_user(cls):
@@ -219,6 +224,10 @@ class Location(geomodel.GeoModel):
     
     def get_address(self):
         return "%s %s, %s %s" % ( self.address, self.city, self.state, self.zip )
+    
+    def get_thumbnail_url(self):
+        if self.location:
+            return "http://maps.google.com/maps/api/staticmap?center=%s,%s&size=200x200&sensor=false&zoom=17&&maptype=roadmap&markers=color:blue|label:X|%s,%s" % ( self.location.lat, self.location.lon, self.location.lat, self.location.lon )
     
 class Image(db.Model):
     created = db.DateTimeProperty(auto_now_add=True)

@@ -1,0 +1,13 @@
+{% extends "master.html" %}
+
+{% block content %}
+
+{% if current_user %}
+<p>
+Welcome to the DoDah workspace!  Use this area to create locations, and dodads to be found!
+</p>
+{% else %}
+DoDah is awesome! it does great stuff! 
+{% endif %}
+
+{% endblock %}

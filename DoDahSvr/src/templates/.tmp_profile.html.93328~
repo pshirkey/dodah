@@ -1,0 +1,40 @@
+{% extends "master.html" %}
+
+{% block content %}
+<script type="text/javascript" src="http://dev.jquery.com/view/trunk/plugins/validate/jquery.validate.js"></script>
+<script type="text/javascript" src="/javascript/profile.js"></script>
+  
+<div class="mainColumn" id="someform" name="someform"> 
+	<form action="/profie" method="post">
+		<h1>Update Profile</h1>
+		<div class="error" style="display:none;"> 
+      <img src="/images/warning.gif" alt="Warning!" width="24" height="24" style="float:left; margin: -5px 10px 0px 0px; " /> 
+      <span></span>.<br clear="all"/> 
+    </div> 
+        <div class="section">
+			<label for="name">First Name:</label>
+			<input type="text" class="required" id="first_name" name="first_name" {% if current_user %} value="{{ current_user.first_name }}" {% endif %}/>
+		</div>	
+		<div class="section">
+			<label for="name">Last Name:</label>
+			<input type="text" class="required" id="last_name" name="last_name" {% if current_user %} value="{{ current_user.last_name }}" {% endif %}/>
+		</div>	
+		<div class="section">
+			<label for="name">Email Address:</label>
+			<input type="text" class="required email" id="email" name="email" {% if current_user %} value="{{ current_user.email_address }}" {% endif %}/>
+		</div>		
+		<div class="section">
+		<label for="news">Send me news from {{ site_name }}</label>
+		<input type='checkbox' name="news" id='news' checked="yes" name='news' value='1' tabindex='1014' />
+        </div>
+		<div class="section">
+		<label for="parthernews">Send me news from {{ site_name }}'s partners</label>
+		<input type='checkbox' name="parthernews" id='partnernews' checked="yes" name='partnernews' value='1' tabindex='1015' />
+        </div>
+		
+		<div><input type="submit" class="button" value="Save"></div>	
+		<div>{{ message }}</div>
+	</form>	
+</div>
+
+{% endblock %}

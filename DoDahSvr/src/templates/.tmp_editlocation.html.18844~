@@ -1,0 +1,123 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+    <head>
+        <meta name="generator" content="HTML Tidy, see www.w3.org">
+
+        <title></title>
+    </head>
+
+    <body>
+        {% extends "master.html" %} {% block content %} 
+		<div class="maincolumn" id="searchlocations">
+        
+        	<div class="errors">
+        		<ol>
+			    {% for error in form.errors %}
+			        <li><strong>{{ error|escape }}</strong></li>
+			    {% endfor %}
+			    </ol>
+        	</div>
+            <form name="locform" action="/savelocation" method="post">
+               <h1>
+            Create or Edit a Location
+        </h1>
+				 <input type="hidden" name="id" value="{{loc.key}}">
+				
+                <div class="section">
+                    {{ form.name.errors }}
+					<label for="id_name">Name:</label>
+					{{ form.name }}
+                </div>
+				<div class="section">
+                    {{ form.category.errors }}
+                    <label for="id_category">Category:</label>
+                    {{ form.category }}
+                </div>
+				<div class="section">
+                    {{ form.description.errors }}
+                    <label for="id_description">Description:</label>
+                    {{ form.description }}
+                </div>
+				<div class="section">
+                    {{ form.address.errors }}
+                    <label for="id_address">Address:</label>
+                    {{ form.address }}
+                </div>
+				<div class="section">
+                    {{ form.city.errors }}
+                    <label for="id_city">City:</label>
+                    {{ form.address }}
+                </div>
+				<div class="section">
+                    {{ form.state.errors }}
+                    <label for="id_state">State:</label>
+                    {{ form.state }}
+                </div>
+				<div class="section">
+                    {{ form.zip.errors }}
+                    <label for="id_zip">Zip:</label>
+                    {{ form.zip }}
+                </div>
+				<div class="section">
+                    {{ form.country.errors }}
+                    <label for="id_country">Country:</label>
+                    {{ form.country }}
+                </div>
+				<div class="section">
+                    {{ form.phone_number.errors }}
+                    <label for="id_phone_number">Phone Number:</label>
+                    {{ form.phone_number }}
+                </div>
+				<div><input type="submit" value="Save"/></div>
+            </form>
+        {% if loc %} 
+		
+		<div style="margin-left:auto;margin-right:auto;margin-top:75px;">
+		<h1>DoDads</h1>
+    <table cellpadding="10" cellspacing="10" width="100%">
+    <tr>
+    <th>Created</th>
+    <th>Code</th>
+    <th>Value</th>
+    <th>Details</th>
+	<th>Difficulty</th>
+	<th>Active</th>
+    <th>Found</th>
+    <th>Redeemed</th>    
+	<th>Expires</th>
+	<th>&nbsp;</th>
+    </tr>
+    {% for item in loc.items %}
+    <tr>
+        <form action="/saveitem" action="post">
+        	<input type="hidden" name="id" id="id" value="{{ item.key }}"/>
+			<input type="hidden" name="locid" id="locid" value="{{ loc.key }}"/>
+        	<td>{{ item.created|date:"m/d/Y" }}</td>
+			<td>{{ item.code }}</td>
+			<td><input type="text" name="name" value="{{ item.name }}"></td>
+			<td><textarea name="details">{{ item.details }}</textarea></td>
+			<td><input type="text" name="difficulty" maxlength="3" value="{{ item.difficulty }}"/></td>
+			<td><input type='checkbox' name="active" id='active' {% if item.active %} checked="yes" {% endif %}  name='news' value='1' /></td>
+			{% if item.found_user %}
+			<td>Yes</td>
+			{% else %}
+			<td>No</td>
+			{% endif %}
+			{% if item.redeemed %}
+            <td>Yes</td>
+            {% else %}
+            <td>No</td>
+            {% endif %}
+			<td>{{ item.expires|date:"m/d/Y" }}</td>
+			<td><input type="submit" value="Save"/></td>			
+        </form> 
+    </tr>
+    {% endfor %}
+    </table>
+	<br/>
+	<div><a href="/generate?id={{ loc.key }}">Generate 5 New Dodads</a></div>
+		
+		{% endif %} {% endblock %}
+    </body>
+</html>
+
