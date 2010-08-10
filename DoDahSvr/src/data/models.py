@@ -35,6 +35,8 @@ class Pacific_tzinfo(datetime.tzinfo):
             return "PST"
         else:
             return "PDT"
+        
+
 
 class Environment(db.Model):    
     created = db.DateTimeProperty(auto_now_add=True)
@@ -196,6 +198,88 @@ class User(db.Model):
             return self.fullname
             
         return "%s %s" % (self.first_name, self.last_name)
+    
+# Access Token
+#
+class AccessToken(db.Model):
+
+    created = db.DateTimeProperty(auto_now_add=True)
+    updated = db.DateTimeProperty(auto_now=True)
+    name = db.StringProperty()
+    token = db.StringProperty()
+    user = db.ReferenceProperty(User, required=True)
+    valid_days = db.IntegerProperty(default=30)
+    expired = db.BooleanProperty(default=False)
+    
+    @classmethod
+    def _create_token(self):
+        alphabet = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'
+        return "".join(random.sample(alphabet,15))
+    
+    @classmethod
+    def create(cls, email, password):
+        user = User.get_by_key_name(email)
+        if user and user.password == password:
+            token = AccessToken.find_for_user(user)
+            if token:
+                return token.token
+            else:
+                token_str = AccessToken._create_token()
+                token = AccessToken.get_by_key_name(token_str)
+                while token:
+                    token_str = AccessToken._create_token()
+                    token = AccessToken.get_by_key_name(token_str)
+                token = AccessToken(key_name=token_str, token=token, user=user)
+                token.save()
+                return token
+    
+    @classmethod
+    def valid(cls, token):
+        token = AccessToken.get_by_key_name(token)
+        if token and not token.expired:
+            timedelta = datetime.datetime.now() - token.created
+            if timedelta.days > token.valid_days:
+                token.expired = True
+                token.save()
+            else:
+                return token            
+        return None
+    
+    @classmethod
+    def find_for_user(cls, user):
+        return AccessToken.gql("WHERE User=:1 and expired=:2", user, False).get()
+
+class ServiceClient(db.Model):
+    created = db.DateTimeProperty(auto_now_add=True)
+    updated = db.DateTimeProperty(auto_now=True)
+    name = db.StringProperty(required=True)
+    client_key = db.StringProperty()
+    
+    @classmethod
+    def load(cls):
+        for e in ServiceClient.all():
+            e.delete()
+        android = ServiceClient.create(key_name="B902A730A4D211DFA5C53432E0D72085", name="android", client_key="B902A730A4D211DFA5C53432E0D72085")  
+        android.put()
+        
+    @classmethod
+    def valid(cls, key):  
+        if ServiceClient.all().count() <= 0:
+            ServiceClient.load()
+        return ServiceClient.get_by_key_name(key)
+    
+class ServiceLog(db.Model):
+    created = db.DateTimeProperty(auto_now_add=True)
+    updated = db.DateTimeProperty(auto_now=True)
+    call = db.StringProperty()
+    service_client = db.ReferenceProperty(ServiceClient, required=True)
+    access_token = db.ReferenceProperty(AccessToken)
+    
+    @classmethod
+    def create(cls, call, client, token):
+        log = ServiceLog(call=call,service_client=client, access_token=token )
+        log.put()
+        
 
 class Category(db.Model):
     created = db.DateTimeProperty(auto_now_add=True)

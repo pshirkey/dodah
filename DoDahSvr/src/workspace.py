@@ -3,7 +3,6 @@ import logging
 import os.path
 import time
 import urllib
-import simplejson
 import datetime
 from data import models
 from google.appengine.ext import db
@@ -20,89 +19,9 @@ import django.newforms as forms
 import random
 from googlemaps import GoogleMaps
 import facebook
-
-
-METERS_IN_MILE = 1609.344
-
-class Base(webapp.RequestHandler):
-    
-    template_path = '/templates/'
-    login_template_name = "login.html"
-
-    def get(self):
-        self.post()
-    def post(self):
-        if self.current_user:
-            self.do_post()
-        else:
-            self.generate( Login.template, None )
-            
-    def do_post(self):
-        pass    
-    
-    def param(self, name):
-        return self.request.get(name)
-    
-    def write(self, mes):
-        self.response.out.write(mes)
-        
-    def _create_item_code(self):
-        alphabet = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'
-        return "".join(random.sample(alphabet,8))
-    
-    def generate (self, fileIn, values):
-        if values is None:
-            values = {}
-        
-        if 'current_user' not in values.keys():
-            values['current_user'] = self.current_user
-        if 'site_name' not in values.keys():
-            values['site_name'] = self.enviroment.site_name
-        if 'site_url' not in values.keys():
-            values['site_url'] = self.enviroment.external_url
-        if 'fb_api_key' not in values.keys():
-            values['fb_api_key'] = self.enviroment.facebook_api_key
-        
-        
-        ROOT_PATH = os.path.dirname(__file__)
-        path = os.path.join(ROOT_PATH + self.template_path, str(fileIn))
-        self.response.out.write(template.render(path, values))
-        
-    @property
-    def enviroment(self):
-        if not hasattr(self, "_enviroment"):
-            self._enviroment = None
-            self._enviroment = models.Environment.get_for_current_environment()
-        return self._enviroment;  
-    
-    @property
-    def current_user(self):
-        if not hasattr(self, "_current_user"):
-            self._current_user = None
-            #host = os.environ.get("SERVER_NAME")
-            #if host == "localhost":
-            #    self._current_user = models.User.get_test_user()
-            #    return self._current_user      
-            
-            cookieutil = lilcookies.LilCookies(self, self.enviroment.cookie_secret )
-            uid = cookieutil.get_secure_cookie(name='uid')
-            if uid:
-                self._current_user = db.get(uid)
-        return self._current_user
-    
-    def update_current_user_facebook(self):
-        cookie = facebook.get_user_from_cookie(
-                        self.request.cookies, self.enviroment.facebook_api_key, self.enviroment.facebook_secret_key)
-        if cookie and self.current_user:
-            graph = facebook.GraphAPI(cookie["access_token"])
-            profile = graph.get_object("me")
-            self.current_user.fb_uid = profile["id"]
-            self.current_user.fb_profile_url = profile["link"]
-            self.current_user.fb_access_token = cookie["access_token"]
-            self.current_user.save()  
-
+import base
      
-class Login(Base):
+class Login(base.Base):
     
     url = "/login"
     template = "login.html"
@@ -124,7 +43,7 @@ class Login(Base):
         else:
                 self.generate( Login.template, None )
                 
-class Logout(Base):
+class Logout(base.Base):
     
     url = "/logout"
     
@@ -133,7 +52,7 @@ class Logout(Base):
         cookieutil.clear_all_cookies()
         self.redirect(Login.url)
             
-class Locations(Base):
+class Locations(base.Base):
     
     url = "/locations"
     template = "locations.html"
@@ -148,7 +67,7 @@ class LocationForm(djangoforms.ModelForm):
         category = forms.ModelChoiceField(queryset=models.Category.all())
         description = forms.CharField(widget=forms.Textarea(attrs={'cols': 130, 'rows': 20}))
         
-class EditLocation(Base):
+class EditLocation(base.Base):
     
     url = "/editlocation"
     template = "editlocation.html"
@@ -175,7 +94,7 @@ class EditLocation(Base):
                            }
         self.generate(EditLocation.template, template_values)
         
-class SaveLocation(Base):
+class SaveLocation(base.Base):
     url = "/savelocation"
     
     def do_post(self):
@@ -201,7 +120,7 @@ class SaveLocation(Base):
                                }
         self.generate(EditLocation.template, template_values)
         
-class SaveItem(Base):
+class SaveItem(base.Base):
     url = "/saveitem"
     
     def do_post(self):
@@ -219,7 +138,7 @@ class SaveItem(Base):
             item.save()
         self.redirect(EditLocation.get_url(locid))
         
-class GenerateItems(Base):
+class GenerateItems(base.Base):
     
     url="/generate"
     
@@ -244,7 +163,7 @@ class GenerateItems(Base):
                 item.put()
         self.redirect(EditLocation.get_url(id))
         
-class FindLocations(Base):
+class FindLocations(base.Base):
     
     url = "/findlocations"
     template_name = "findlocations.html"
@@ -261,13 +180,13 @@ class FindLocations(Base):
             gmaps = GoogleMaps(self.enviroment.google_maps_key)   
             lat, lng = gmaps.address_to_latlng(address)
             geoPoint = db.GeoPt(lat, lng)
-            meters = float(miles) * METERS_IN_MILE        
+            meters = float(miles) * base.METERS_IN_MILE        
             locations = models.Location.proximity_fetch( models.Location.all(), geoPoint, int(max_results), meters )
             values['locations'] = locations
         
         self.generate(FindLocations.template_name, values)
         
-class SignUp(Base):
+class SignUp(base.Base):
     
     url = "/signup"
     template_name = "signup.html"
@@ -298,7 +217,7 @@ class SignUp(Base):
         self.generate(SignUp.template_name, values)
         
         
-class Profile(Base):
+class Profile(base.Base):
     
     url = "/profile"
     template_name = "profile.html"
@@ -331,7 +250,7 @@ class Profile(Base):
         self.update_current_user_facebook()
         self.generate(Profile.template_name, None)
         
-class About(Base):
+class About(base.Base):
     
     url = "/about"
     template_name = "about.html"
@@ -339,7 +258,7 @@ class About(Base):
     def post(self):
         self.generate(About.template_name, None)
         
-class Privacy(Base):
+class Privacy(base.Base):
     
     url = "/privacy"
     template_name = "privacy.html"
@@ -347,7 +266,7 @@ class Privacy(Base):
     def post(self):
         self.generate(Privacy.template_name, None)
         
-class HowItWorks(Base):
+class HowItWorks(base.Base):
     
     url = "/howitworks"
     template_name = "howitworks.html"
@@ -355,7 +274,7 @@ class HowItWorks(Base):
     def post(self):
         self.generate(HowItWorks.template_name, None)
         
-class ContactUs(Base):
+class ContactUs(base.Base):
     
     url = "/contact"
     template_name = "contactus.html"
@@ -363,7 +282,7 @@ class ContactUs(Base):
     def post(self):
         self.generate(ContactUs.template_name, None)
         
-class Terms(Base):
+class Terms(base.Base):
     
     url = "/terms"
     template_name = "terms.html"
@@ -373,7 +292,7 @@ class Terms(Base):
         
         
 
-class Index(Base):
+class Index(base.Base):
     
     url = "/"    
     template_name = "index.html"
@@ -381,7 +300,7 @@ class Index(Base):
     def post(self):
         self.generate(Index.template_name, None)
         
-class LoadTestData(Base):
+class LoadTestData(base.Base):
     
     url = "/loadtestdata"
     

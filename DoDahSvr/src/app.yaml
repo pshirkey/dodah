@@ -22,6 +22,10 @@ handlers:
   script: workspace.py
   secure: always
   
+- url: /service.*
+  script: service
+  secure: never
+  
 - url: /.*
   script: workspace.py
   secure: never
