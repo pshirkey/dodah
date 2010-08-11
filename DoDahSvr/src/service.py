@@ -24,8 +24,8 @@ import base
 class ServiceBase(base.Base):
     
     def post(self):
-        access_token = self.request.get('access_token')
-        service_client = self.request.get('service_client')
+        access_token = self.param('access_token')
+        service_client = self.param('service_client')
         if access_token and service_client:
             token = models.AccessToken.valid(access_token)
             client = models.ServiceClient.valid(service_client)
@@ -49,21 +49,23 @@ class ServiceBase(base.Base):
     
 class Authenticate(ServiceBase):
     
-    url = "/service/autheticate"
+    url = "/service/authenticate"
     
     def post(self):        
         email = self.param('email')
         password = self.param('password')    
-        service_client = self.request.get('service_client')
+        service_client = self.param('service_client')
         if service_client:
             client = models.ServiceClient.valid(service_client)
             if client:
-                models.ServiceLog.create(self.__class__.__name__, client, None)
+                log = models.ServiceLog.create(self.__class__.__name__, client, None)
                 if email and password:    
                     user = models.User.get_by_key_name(email)
                     if user and user.password == password:
-                        access_token = models.AccessToken.create(user)
-                        self.write_json([{ 'access_token':access_token }])
+                        access_token = models.AccessToken.create_for_user(user)
+                        log.access_token = access_token
+                        log.save()
+                        self.write_json([{ 'access_token':access_token.token }])
                     else:
                         self.write_error('invalid email or password')
                 else:
@@ -76,15 +78,15 @@ class CreateAccount(ServiceBase):
     url = "/service/createaccount"
     
     def post(self):
-        first_name = self.request.get('first_name')
-        last_name = self.request.get('last_name')
-        emailAddress = self.request.get('email')
-        password = self.request.get('password')
-        service_client = self.request.get('service_client')
+        first_name = self.param('first_name')
+        last_name = self.param('last_name')
+        emailAddress = self.param('email')
+        password = self.param('password')
+        service_client = self.param('service_client')
         if service_client:
             client = models.ServiceClient.valid(service_client)
             if client:
-                models.ServiceLog.create(self.__class__.__name__, client, None)
+                log = models.ServiceLog.create(self.__class__.__name__, client, None)
                 if emailAddress and password:
                     if models.User.email_exists(emailAddress):
                         self.write_error("Email Address is already in use")
@@ -92,8 +94,10 @@ class CreateAccount(ServiceBase):
                     else:
                         user = models.User.create(first_name, last_name, emailAddress, password)
                         if user:
-                            access_token = models.AccessToken.create(user)
-                            self.write_json([{ 'access_token':access_token }])
+                            access_token = models.AccessToken.create_for_user(user)
+                            log.access_token = access_token
+                            log.save()
+                            self.write_json([{ 'access_token':access_token.token }])
                         else:
                             self.write_error("Unable to create account")
             else:

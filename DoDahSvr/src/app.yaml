@@ -23,8 +23,10 @@ handlers:
   secure: always
   
 - url: /service.*
-  script: service
-  secure: never
+  script: service.py
+  
+- url: /test.*
+  script: servicetest.py
   
 - url: /.*
   script: workspace.py

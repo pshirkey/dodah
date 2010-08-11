@@ -217,19 +217,18 @@ class AccessToken(db.Model):
         return "".join(random.sample(alphabet,15))
     
     @classmethod
-    def create(cls, email, password):
-        user = User.get_by_key_name(email)
-        if user and user.password == password:
+    def create_for_user(cls, user):
+        if user:
             token = AccessToken.find_for_user(user)
             if token:
-                return token.token
+                return token
             else:
                 token_str = AccessToken._create_token()
                 token = AccessToken.get_by_key_name(token_str)
                 while token:
                     token_str = AccessToken._create_token()
                     token = AccessToken.get_by_key_name(token_str)
-                token = AccessToken(key_name=token_str, token=token, user=user)
+                token = AccessToken(key_name=token_str, token=token_str, user=user)
                 token.save()
                 return token
     
@@ -247,7 +246,7 @@ class AccessToken(db.Model):
     
     @classmethod
     def find_for_user(cls, user):
-        return AccessToken.gql("WHERE User=:1 and expired=:2", user, False).get()
+        return AccessToken.gql("WHERE user=:1 and expired=:2", user, False).get()
 
 class ServiceClient(db.Model):
     created = db.DateTimeProperty(auto_now_add=True)
@@ -259,8 +258,10 @@ class ServiceClient(db.Model):
     def load(cls):
         for e in ServiceClient.all():
             e.delete()
-        android = ServiceClient.create(key_name="B902A730A4D211DFA5C53432E0D72085", name="android", client_key="B902A730A4D211DFA5C53432E0D72085")  
+        android = ServiceClient(key_name="B902A730A4D211DFA5C53432E0D72085", name="android", client_key="B902A730A4D211DFA5C53432E0D72085")  
         android.put()
+        webtest = ServiceClient(key_name="882AF324A4DC11DFB3BABF3DE0D72085", name="webtest", client_key="882AF324A4DC11DFB3BABF3DE0D72085")  
+        webtest.put()
         
     @classmethod
     def valid(cls, key):  
@@ -272,13 +273,14 @@ class ServiceLog(db.Model):
     created = db.DateTimeProperty(auto_now_add=True)
     updated = db.DateTimeProperty(auto_now=True)
     call = db.StringProperty()
-    service_client = db.ReferenceProperty(ServiceClient, required=True)
-    access_token = db.ReferenceProperty(AccessToken)
+    service_client = db.ReferenceProperty(ServiceClient, required=True, collection_name="log")
+    access_token = db.ReferenceProperty(AccessToken, collection_name="log")
     
     @classmethod
     def create(cls, call, client, token):
         log = ServiceLog(call=call,service_client=client, access_token=token )
         log.put()
+        return log
         
 
 class Category(db.Model):
