@@ -27,6 +27,7 @@ handlers:
   
 - url: /test.*
   script: servicetest.py
+  login: admin
   
 - url: /.*
   script: workspace.py

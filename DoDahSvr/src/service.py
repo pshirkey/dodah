@@ -41,7 +41,7 @@ class ServiceBase(base.Base):
         pass
     
     def write_error(self, message ):
-        self.response.out.write(simplejson.dumps([{ 'error_message':message }]))
+        self.response.out.write(simplejson.dumps([{ 'status':'error','error_message':message }]))
     
     def write_json(self, json): 
         self.response.out.write(simplejson.dumps(json))
@@ -65,7 +65,7 @@ class Authenticate(ServiceBase):
                         access_token = models.AccessToken.create_for_user(user)
                         log.access_token = access_token
                         log.save()
-                        self.write_json([{ 'access_token':access_token.token }])
+                        self.write_json([{ 'status':'success','access_token':access_token.token }])
                     else:
                         self.write_error('invalid email or password')
                 else:
@@ -97,7 +97,7 @@ class CreateAccount(ServiceBase):
                             access_token = models.AccessToken.create_for_user(user)
                             log.access_token = access_token
                             log.save()
-                            self.write_json([{ 'access_token':access_token.token }])
+                            self.write_json([{ 'status':'success', 'access_token':access_token.token }])
                         else:
                             self.write_error("Unable to create account")
             else:
