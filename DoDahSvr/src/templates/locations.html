@@ -8,7 +8,6 @@
     <th>&nbsp;</th>
     <th>Name</th>
 	<th>Address</th>
-	<th>Geo</th>
 	<th>DoDads</th>
 	<th>User Rating</th>
 	<th>Created</th>
@@ -18,7 +17,6 @@
 		<td><img src="{{ loc.get_thumbnail_url }}"/></td>
 		<td><a href="/editlocation?id={{ loc.key }}">{{ loc.name }}</td>
 		<td>{{ loc.get_address }}</td>
-		<td>{{ loc.location.lat}},{{ loc.location.lon }}</td>
 		{% if loc.items %}
 		<td>{{ loc.items.count }}</td>
 		{% else %}

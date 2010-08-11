@@ -24,18 +24,18 @@
 <div style="margin-left:auto;margin-right:auto;margin-top:75px;">
     <table cellpadding="10" cellspacing="10" width="100%">
     <tr>
-    <th>Name</th>
+    <th>&nbsp;</th>
+	<th>Name</th>
     <th>Address</th>
-    <th>Geo</th>
     <th>DoDads</th>
     <th>User Rating</th>
     <th>Created</th>
     </tr>
     {% for loc in locations %}
     <tr>
-        <td><a href="/editlocation?id={{ loc.key }}">{{ loc.name }}</td>
+        <td><img src="{{ loc.get_thumbnail_url }}"/></td>
+		<td><a href="/editlocation?id={{ loc.key }}">{{ loc.name }}</td>
         <td>{{ loc.get_address }}</td>
-        <td>{{ loc.geo }}</td>
         {% if loc.items %}
         <td>{{ loc.items.count }}</td>
         {% else %}
