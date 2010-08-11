@@ -315,6 +315,43 @@ class Location(geomodel.GeoModel):
         if self.location:
             return "http://maps.google.com/maps/api/staticmap?center=%s,%s&size=200x200&sensor=false&zoom=17&&maptype=roadmap&markers=color:blue|label:X|%s,%s" % ( self.location.lat, self.location.lon, self.location.lat, self.location.lon )
     
+    def get_available_item(self):
+        if self.items and self.items.count > 0:
+            itemlist = []
+            for i in self.items:
+                itemlist.append(i)
+                
+            item = random.choice(itemlist)
+            trys = 0
+            while trys < len(itemlist):
+                trys = trys + 1
+                if self._check_item(item):
+                    return item
+            
+            if not item:
+                for item in itemlist:
+                    if self._check_item(item):
+                        return item 
+            
+        return None
+    
+    def _check_item(self, item):
+        if item and item.active and not item.found_user:
+            expired = datetime.date.today() - item.expires 
+            if expired.days > 0:
+                return False
+            if item.search_lock:
+                delta = datetime.datetime.now() - item.search_lock
+                if delta.days >= 1:
+                    item.search_lock = datetime.datetime.now()
+                    item.save()
+                    return True
+            else:
+                item.search_lock = datetime.datetime.now()
+                item.save()
+                return True
+        return False
+    
 class Image(db.Model):
     created = db.DateTimeProperty(auto_now_add=True)
     updated = db.DateTimeProperty(auto_now=True)
@@ -340,10 +377,13 @@ class Difficulty(db.Model):
         
     @classmethod
     def find(cls, name):
-        return Difficulty.gql("WHERE name=:1", name).get()
+        return Difficulty.gql("WHERE name=:name", name=name).get()
     
     def __str__(self):
         return self.name.capitalize()
+    
+    def to_json_object(self):
+        return {'name':self.name, 'time':self.time_to_find_seconds }
     
 class Item(db.Model):
     created = db.DateTimeProperty(auto_now_add=True)
@@ -357,6 +397,10 @@ class Item(db.Model):
     redeemed = db.BooleanProperty(default=False)
     expires = db.DateProperty()
     active = db.BooleanProperty(default=False)
+    search_lock = db.DateTimeProperty()
+    
+    def to_json_object(self):
+        return {'code':self.code, 'difficulty':self.difficulty.to_json_object(), 'details':self.details, 'name':self.name, 'key':str(self.key()) }
     
     
             

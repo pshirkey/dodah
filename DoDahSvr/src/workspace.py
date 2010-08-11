@@ -129,12 +129,14 @@ class SaveItem(base.Base):
         name = self.param('name')
         details = self.param('details')
         difficulty = self.param('difficulty')
+        active = ( self.param('active') == 'yes' )
         item = db.get(id)
         if item:
             diff = models.Difficulty.find(difficulty)
             item.name = name
             item.details = details
             item.difficulty = diff
+            item.active = active
             item.save()
         self.redirect(EditLocation.get_url(locid))
         

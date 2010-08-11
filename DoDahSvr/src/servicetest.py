@@ -32,7 +32,11 @@ class TestBase(webapp.RequestHandler):
         return self.request.get(name)
     
     def write(self, mes):
-        self.response.out.write(mes)
+        self.response.out.write(mes)        
+        
+    def _create_item_code(self):
+        alphabet = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'
+        return "".join(random.sample(alphabet,8))
         
     def generate (self, fileIn, values):
         ROOT_PATH = os.path.dirname(__file__)
@@ -45,6 +49,59 @@ class TestBase(webapp.RequestHandler):
             self._enviroment = None
             self._enviroment = models.Environment.get_for_current_environment()
         return self._enviroment;  
+    
+    @property 
+    def test_location(self):
+        if not hasattr(self, "_test_location"):
+            self._test_location = None
+            if models.Category.all().count() <= 0:
+                cat = models.Category(name="Food/Beverage", description="")
+                cat.put()
+                
+                subcat = models.Category(name="Resturant", description="", parent_category=cat)
+                subcat.put()
+                
+                subcat = models.Category(name="Coffee House", description="", parent_category=cat)
+                subcat.put()
+            
+            self._test_location = models.Location.gql("WHERE name='Some Coffee Place'").get()
+            if not self._test_location:        
+                models.Difficulty.load()    
+                self._test_location = models.Location(owner=models.User.get_test_user(), location=db.GeoPt(37, -122))
+                self._test_location.address = "310 SW 3rd Street"
+                self._test_location.name = "Some Coffee Place"
+                self._test_location.description = "Some Coffee Place used for testing"
+                self._test_location.category = models.Category.gql("WHERE name='Coffee House'").get()
+                self._test_location.city = "Corvallis"
+                self._test_location.state = "OR"
+                self._test_location.zip = "97333"
+                self._test_location.county = "USA"
+                self._test_location.phone_number = "(541) 757-3025"
+                self._test_location.rating = 48
+                self._test_location.put()
+                gmaps = GoogleMaps(self.enviroment.google_maps_key)   
+                lat, lng = gmaps.address_to_latlng(self._test_location.get_address())
+                self._test_location.update_location(db.GeoPt(lat, lng))
+                self._test_location.save()
+                
+                difficulty = models.Difficulty.find( 'MEDIUM' )
+                oneMonth = datetime.timedelta(days=30)
+                today = datetime.date.today()
+                expires = today + oneMonth
+            
+                for i in range(1, 5):
+                    code = self._create_item_code()
+                    item = models.Item.get_by_key_name(code)
+                    while item:
+                        code = self._create_item_code()
+                        item = models.Item.get_by_key_name(code)
+                    item = models.Item(key_name=code, location=self._test_location,
+                                       name="Free 20oz Coffee", 
+                                       details="Show Code at Counter to get a Free Coffee 20oz", 
+                                       active=True, code=code, expires=expires, difficulty=difficulty)
+                    item.put()
+            return self._test_location 
+    
 
 class Index(TestBase):
     
@@ -57,7 +114,7 @@ class Index(TestBase):
         u = models.User.get_test_user()
         if u:
             at = models.AccessToken.create_for_user(u)
-        self.generate(Index.template, {'cleared_message':cleared_message, 'test_user_access_token':at.token})
+        self.generate(Index.template, {'cleared_message':cleared_message, 'test_user_access_token':at.token, 'test_location_key':self.test_location.key()})
         
     
 class Clear(TestBase):
@@ -84,7 +141,7 @@ class Clear(TestBase):
             except:
                 pass                        
         self.redirect('test?cleared_message=data cleared %s' % datetime.datetime.now().strftime("%m/%d/%y %I:%M:%S"))
-        
+     
 
 application = webapp.WSGIApplication([
                                       (Index.url, Index),

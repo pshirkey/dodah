@@ -22,8 +22,9 @@
 			<li>Andriod Client Id : B902A730A4D211DFA5C53432E0D72085</li>
 			<li>Web Test Client Id : 882AF324A4DC11DFB3BABF3DE0D72085</li>
 			<li>Test User Access Token : {{test_user_access_token}}</li>
+			<li>Test Location Key : {{ test_location_key }}</li>
 		</ul>
-		<button id="clear" name="clear">Clear Test Data</button><span style="padding:20px;">{{ cleared_message }}</span>
+		<button id="clear" name="clear">Clear Data</button><span style="padding:20px;">{{ cleared_message }}</span>
 	</div>
 	<div class="mainColumn" id="create" name="create" style="border:solid;padding:30px;margin:30px;"> 
 	<form id="createform" name="createform">
@@ -107,7 +108,7 @@
 		</ul>
 		<div class="section">
 			<label for="name">Access Token:</label>
-			<input type="text" id="access_token" name="access_token"/>
+			<input type="text" id="access_token" name="access_token" value="{{test_user_access_token}}"/>
 		</div>
 			
 	</form>	
@@ -117,6 +118,34 @@
 	<h1>GetDifficulties - Result</h1>
         <div id="diffreturn" name="diffresult"></div>
 	</div>
+	
+	<div class="mainColumn" style="border:solid;padding:30px;margin:30px;"> 
+	<form id="startsearchform" name="startsearchform" >
+		<input type="hidden" id="service_client" name="service_client" value="882AF324A4DC11DFB3BABF3DE0D72085"/>
+		<h1>StartSearch</h1>
+		<ul>
+			 <li>client_key( required )</li>
+			 <li>access_token ( required )</li>
+			 <li>location_key( required )</li>
+			 <li>returns list of difficulties and times or error</li>
+		</ul>
+		<div class="section">
+			<label for="name">Access Token:</label>
+			<input type="text" id="access_token" name="access_token" value="{{test_user_access_token}}"/>
+		</div>
+		<div class="section">
+			<label for="name">Location Key:</label>
+			<input type="text" id="location_key" name="location_key" value="{{test_location_key}}"/>
+		</div>
+			
+	</form>	
+	<div><button id="startsearchbutton" name="startsearchbutton">Execute</button></div>	
+	</div>
+	<div class="mainColumn" id="startsearchresult" name="startsearchresult" style="border:solid;padding:30px;margin:30px;display:none"> 
+	<h1>StartSearch - Result</h1>
+        <div id="startsearchreturn" name="startsearchreturn"></div>
+	</div>
+	
 	
 	
 	
@@ -164,9 +193,29 @@
 							});
 			});
 			
+			$("#startsearchbutton").button();
+			$("#startsearchbutton").click(function (e){				
+				$.ajax({
+								url: '/service/startsearch',
+								data: $('#startsearchform').serialize(),
+								type: 'post',
+								cache: false,
+								success: function (data) {
+									$('#startsearchresult').fadeIn(200, function () {
+										$('#startsearchreturn').html(data).fadeIn(200);
+									});
+								},
+							});
+			});
+			
 			$("#clear").button();
 			$("#clear").click(function(e){
 				window.location = "/test/clear";
+			});
+			
+			$("#loadtestdata").button();
+			$("#loadtestdata").click(function(e){
+				window.location = "/test/load";
 			});
 			
 			$("#createbutton").button();

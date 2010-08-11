@@ -111,18 +111,44 @@ class GetDifficulties(ServiceBase):
     
     def do_post(self):
         json = [{ 'status':'success', }]
-        diffs = {}
         models.Difficulty.load()
         for d in models.Difficulty.all():             
-            diffs[d.name] = d.time_to_find_seconds
-        json.append(diffs)
+            json.append(d.to_json_object())
         self.write_json(json)
                 
+class StartSearch(ServiceBase):
+    
+    url = "/service/startsearch"
+    
+    def do_post(self):
+        location_key = self.param('location_key')
+        if location_key:
+            try:
+                location = db.get(location_key)
+            except:
+                self.write_error("Invalid Location Key")
+                return
+            
+            if location:
+                item = location.get_available_item()
+                if item:
+                    self.write_json([{ 'status':'success'},item.to_json_object()])
+                else:
+                    self.write_error('No Items available')
+            else:
+                self.write_error("Not a supported location")
+            
+        else:
+            self.write_error("Missing Location Key")
+            
+                
+            
      
 application = webapp.WSGIApplication([
                                       (Authenticate.url, Authenticate),
                                       (CreateAccount.url, CreateAccount),
-                                      (GetDifficulties.url, GetDifficulties)                                                          
+                                      (GetDifficulties.url, GetDifficulties),
+                                      (StartSearch.url, StartSearch)                                                         
                                      ], debug=True)
 
 
