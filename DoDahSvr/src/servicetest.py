@@ -53,7 +53,11 @@ class Index(TestBase):
     template = "index.html"
     
     def post(self):
-        self.generate(Index.template, None)
+        cleared_message = self.request.get('cleared_message')
+        u = models.User.get_test_user()
+        if u:
+            at = models.AccessToken.create_for_user(u)
+        self.generate(Index.template, {'cleared_message':cleared_message, 'test_user_access_token':at.token})
         
     
 class Clear(TestBase):
@@ -78,9 +82,8 @@ class Clear(TestBase):
                             pass
                     log.delete()
             except:
-                pass
-                        
-        self.generate(Index.template, { 'cleared_message':'data cleared %s' % datetime.datetime.now().strftime("%m/%d/%y %I:%M:%S") })
+                pass                        
+        self.redirect('test?cleared_message=data cleared %s' % datetime.datetime.now().strftime("%m/%d/%y %I:%M:%S"))
         
 
 application = webapp.WSGIApplication([

@@ -77,10 +77,10 @@ class Base(webapp.RequestHandler):
     def current_user(self):
         if not hasattr(self, "_current_user"):
             self._current_user = None
-            #host = os.environ.get("SERVER_NAME")
-            #if host == "localhost":
-            #    self._current_user = models.User.get_test_user()
-            #    return self._current_user      
+            host = os.environ.get("SERVER_NAME")
+            if host == "localhost":
+                self._current_user = models.User.get_test_user()
+                return self._current_user      
             
             cookieutil = lilcookies.LilCookies(self, self.enviroment.cookie_secret )
             uid = cookieutil.get_secure_cookie(name='uid')

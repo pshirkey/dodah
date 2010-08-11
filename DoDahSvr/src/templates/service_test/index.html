@@ -21,8 +21,7 @@
 		<ul>
 			<li>Andriod Client Id : B902A730A4D211DFA5C53432E0D72085</li>
 			<li>Web Test Client Id : 882AF324A4DC11DFB3BABF3DE0D72085</li>
-			<li>CreateAccount( client_key, first_name, last_name, email, md5_hash_of_password ); returns Access_Token_For_User or error</li>
-			<li>CreateAccount( client_key, email, md5_hash_of_password ); returns Access_Token_For_User or error </li>
+			<li>Test User Access Token : {{test_user_access_token}}</li>
 		</ul>
 		<button id="clear" name="clear">Clear Test Data</button><span style="padding:20px;">{{ cleared_message }}</span>
 	</div>
@@ -30,7 +29,15 @@
 	<form id="createform" name="createform">
 		<input type="hidden" id="service_client" name="service_client" value="882AF324A4DC11DFB3BABF3DE0D72085"/>
 		<h1>Create an account</h1>
-        <div class="section">
+		<ul>
+			 <li>client_key( required )</li>
+			 <li>first_name</li>
+			 <li>last_name</li>
+			 <li>email ( required )</li>
+			 <li>md5_hash_of_password( required )</li>
+			 <li>returns Access_Token_For_User or error</li>
+		</ul>
+		<div class="section">
 			<label for="name">First Name:</label>
 			<input type="text" id="first_name" name="first_name"/>
 		</div>	
@@ -64,7 +71,13 @@
 	<div class="mainColumn" id="create" name="create" style="border:solid;padding:30px;margin:30px;"> 
 	<form id="authform" name="authform" >
 		<input type="hidden" id="service_client" name="service_client" value="882AF324A4DC11DFB3BABF3DE0D72085"/>
-		<h1>Autheticate</h1>
+		<h1>Authenticate</h1>
+		<ul>
+			 <li>client_key( required )</li>
+			 <li>email ( required )</li>
+			 <li>md5_hash_of_password( required )</li>
+			 <li>returns Access_Token_For_User or error</li>
+		</ul>
         <div class="section">
 			<label for="name">email:</label>
 			<input type="text" id="email" name="email"/>
@@ -77,9 +90,38 @@
 	<div><button id="authbutton" name="authbutton">Authenticate</button></div>	
 	</div>
 	<div class="mainColumn" id="authresult" name="authresult" style="border:solid;padding:30px;margin:30px;display:none"> 
-	<h1>Autheticate - Result</h1>
+	<h1>Authenticate - Result</h1>
         <div id="authreturn" name="authresult"></div>
 	</div>
+	
+	
+	
+	<div class="mainColumn" style="border:solid;padding:30px;margin:30px;"> 
+	<form id="diffform" name="diffform" >
+		<input type="hidden" id="service_client" name="service_client" value="882AF324A4DC11DFB3BABF3DE0D72085"/>
+		<h1>Get Difficulties</h1>
+		<ul>
+			 <li>client_key( required )</li>
+			 <li>access_token ( required )</li>
+			 <li>returns list of difficulties and times or error</li>
+		</ul>
+		<div class="section">
+			<label for="name">Access Token:</label>
+			<input type="text" id="access_token" name="access_token"/>
+		</div>
+			
+	</form>	
+	<div><button id="diffbutton" name="diffbutton">Execute</button></div>	
+	</div>
+	<div class="mainColumn" id="diffresult" name="diffresult" style="border:solid;padding:30px;margin:30px;display:none"> 
+	<h1>GetDifficulties - Result</h1>
+        <div id="diffreturn" name="diffresult"></div>
+	</div>
+	
+	
+	
+	
+	
 	
 	</div>
 	</div>
@@ -102,6 +144,21 @@
 								success: function (data) {
 									$('#authresult').fadeIn(200, function () {
 										$('#authresult').html(data).fadeIn(200);
+									});
+								},
+							});
+			});
+			
+			$("#diffbutton").button();
+			$("#diffbutton").click(function (e){				
+				$.ajax({
+								url: '/service/getdifficulties',
+								data: $('#diffform').serialize(),
+								type: 'post',
+								cache: false,
+								success: function (data) {
+									$('#diffresult').fadeIn(200, function () {
+										$('#diffresult').html(data).fadeIn(200);
 									});
 								},
 							});

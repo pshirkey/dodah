@@ -96,7 +96,13 @@
 			<td>{{ item.code }}</td>
 			<td><input type="text" name="name" value="{{ item.name }}"></td>
 			<td><textarea name="details">{{ item.details }}</textarea></td>
-			<td><input type="text" name="difficulty" maxlength="3" value="{{ item.difficulty }}"/></td>
+			<td>
+				<select name="difficulty" id="difficulty">
+				{% for d in diffs %}
+				<option value="{{d.name}}" {% ifequal d.key item.difficulty.key %} selected="true"{% endifequal %}>{{d.name}}</option>
+				{% endfor %}
+				</select>
+			</td>
 			<td><input type='checkbox' name="active" id='active' {% if item.active %} checked="yes" {% endif %}  name='news' value='1' /></td>
 			{% if item.found_user %}
 			<td>Yes</td>

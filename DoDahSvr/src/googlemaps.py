@@ -22,7 +22,7 @@ import urllib2
 try:
     import json
 except ImportError:
-    from django.utils import simplejson as json       # pylint: disable-msg=F0401
+    import simplejson as json       # pylint: disable-msg=F0401
 
 
 VERSION = '1.0.2'

@@ -43,8 +43,8 @@ class ServiceBase(base.Base):
     def write_error(self, message ):
         self.response.out.write(simplejson.dumps([{ 'status':'error','error_message':message }]))
     
-    def write_json(self, json): 
-        self.response.out.write(simplejson.dumps(json))
+    def write_json(self, json_object_array): 
+        self.response.out.write(simplejson.dumps(json_object_array))
     
     
 class Authenticate(ServiceBase):
@@ -65,7 +65,7 @@ class Authenticate(ServiceBase):
                         access_token = models.AccessToken.create_for_user(user)
                         log.access_token = access_token
                         log.save()
-                        self.write_json([{ 'status':'success','access_token':access_token.token }])
+                        self.write_json([{ 'status':'success'},{'access_token':access_token.token }])
                     else:
                         self.write_error('invalid email or password')
                 else:
@@ -97,18 +97,32 @@ class CreateAccount(ServiceBase):
                             access_token = models.AccessToken.create_for_user(user)
                             log.access_token = access_token
                             log.save()
-                            self.write_json([{ 'status':'success', 'access_token':access_token.token }])
+                            self.write_json([{ 'status':'success'},{'access_token':access_token.token }])
                         else:
                             self.write_error("Unable to create account")
             else:
                 self.write_error('invalid client')
         else:
             self.write_error('invalid client')
-     
+            
+class GetDifficulties(ServiceBase):
+    
+    url = "/service/getdifficulties"
+    
+    def do_post(self):
+        json = [{ 'status':'success', }]
+        diffs = {}
+        models.Difficulty.load()
+        for d in models.Difficulty.all():             
+            diffs[d.name] = d.time_to_find_seconds
+        json.append(diffs)
+        self.write_json(json)
+                
      
 application = webapp.WSGIApplication([
                                       (Authenticate.url, Authenticate),
-                                      (CreateAccount.url, CreateAccount)                                                             
+                                      (CreateAccount.url, CreateAccount),
+                                      (GetDifficulties.url, GetDifficulties)                                                          
                                      ], debug=True)
 
 

@@ -87,10 +87,10 @@ class EditLocation(base.Base):
             locForm = LocationForm(instance=loc)
         else:
             locForm = LocationForm()
-                
         template_values = {
                            'loc':loc,
                            'form':locForm,
+                           'diffs':models.Difficulty.all()
                            }
         self.generate(EditLocation.template, template_values)
         
@@ -129,12 +129,12 @@ class SaveItem(base.Base):
         name = self.param('name')
         details = self.param('details')
         difficulty = self.param('difficulty')
-        
         item = db.get(id)
         if item:
+            diff = models.Difficulty.find(difficulty)
             item.name = name
             item.details = details
-            item.diffculty = float(difficulty)
+            item.difficulty = diff
             item.save()
         self.redirect(EditLocation.get_url(locid))
         
@@ -147,6 +147,7 @@ class GenerateItems(base.Base):
         number = self.param('number')
         num = 5
         loc = db.get(id)
+        diff = models.Difficulty.find('EASY')
         if loc:
             oneMonth = datetime.timedelta(days=30)
             today = datetime.date.today()
@@ -159,7 +160,7 @@ class GenerateItems(base.Base):
                 while item:
                     code = self._create_item_code()
                     item = models.Item.get_by_key_name(code)
-                item = models.Item(key_name=code, location=loc, code=code, expires=expires)
+                item = models.Item(key_name=code, location=loc, code=code, expires=expires, difficulty=diff)
                 item.put()
         self.redirect(EditLocation.get_url(id))
         
@@ -305,6 +306,8 @@ class LoadTestData(base.Base):
     url = "/loadtestdata"
     
     def post(self):
+        
+        models.Difficulty.load()
         
         models.User.get_test_user()
         self.redirect(Index.url)

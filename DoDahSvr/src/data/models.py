@@ -321,12 +321,36 @@ class Image(db.Model):
     location = db.ReferenceProperty(Location, required=True, collection_name='images')
     blob_key = db.StringProperty(required=True) 
     
+class Difficulty(db.Model):
+    created = db.DateTimeProperty(auto_now_add=True)
+    updated = db.DateTimeProperty(auto_now=True)
+    name = db.StringProperty(required=True)
+    time_to_find_seconds = db.FloatProperty(required=True, default=0.25)
+    
+    @classmethod
+    def load(cls):
+        if Difficulty.all().count() <= 0:
+            Difficulty(name='INSTANT', time_to_find_seconds=0.25).put()
+            Difficulty(name='SIMPLE', time_to_find_seconds=5.0).put()
+            Difficulty(name='EASY', time_to_find_seconds=10.0).put()
+            Difficulty(name='MEDIUM', time_to_find_seconds=45.0).put()
+            Difficulty(name='HARD', time_to_find_seconds=120.0).put()
+            Difficulty(name='ARDUOUS', time_to_find_seconds=300.0).put()
+            Difficulty(name='IMPOSSIBLE', time_to_find_seconds=3600.0).put()
+        
+    @classmethod
+    def find(cls, name):
+        return Difficulty.gql("WHERE name=:1", name).get()
+    
+    def __str__(self):
+        return self.name.capitalize()
+    
 class Item(db.Model):
     created = db.DateTimeProperty(auto_now_add=True)
     updated = db.DateTimeProperty(auto_now=True)
     location = db.ReferenceProperty(Location, required=True, collection_name='items')
     code = db.StringProperty(required=True)
-    difficulty = db.FloatProperty(default=10.0)
+    difficulty = db.ReferenceProperty(Difficulty)
     name = db.StringProperty(default="")
     details = db.TextProperty(default="")
     found_user = db.ReferenceProperty(User, collection_name='found_items')
