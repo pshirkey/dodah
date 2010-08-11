@@ -1,6 +1,9 @@
 package com.dodah.finder;
 
 import android.app.Activity;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 
 import java.io.FileNotFoundException;
@@ -8,6 +11,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 import android.app.Activity;
+import android.content.Context;
 import android.hardware.Camera;
 import android.hardware.Camera.PictureCallback;
 import android.hardware.Camera.ShutterCallback;
@@ -17,13 +21,17 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
 //Activity to locate a dodah without looking like a damn fool.
 public class LocateActivity extends Activity {
 	
+	private long GPSUpdateRate = 100; // ms
+	
 	private static final String TAG = "Dodah Search";
-	Camera camera;
-	SearchView preview;
+	private Camera camera;
+	private SearchView preview;
+	
 	Button buttonClick;
 
 	/** Called when the activity is first created. */
@@ -43,9 +51,67 @@ public class LocateActivity extends Activity {
 			}
 		});
 
+	 LocationManager locMan;
+	 
+     locMan = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+     locMan.requestLocationUpdates(LocationManager.GPS_PROVIDER, GPSUpdateRate, 1, gpsListener);   
+
 		Log.d(TAG, "onCreate'd");
 	}
 
+	// GPS listener
+	LocationListener gpsListener = new LocationListener(){
+		Location curLocation;
+		boolean locationChanged = false;
+		
+		@Override
+		public void onLocationChanged(Location location) {
+			 if(curLocation == null)
+	         {
+	            curLocation = location;
+	            locationChanged = true;
+	         }
+	         
+	         if(curLocation.getLatitude() == location.getLatitude() &&
+	               curLocation.getLongitude() == location.getLongitude())
+	            locationChanged = false;
+	         else
+	            locationChanged = true;
+	         
+	         curLocation = location;	
+	         //preview.gpsLocation = curLocation;
+	     	
+	 		if(locationChanged)
+	 		{
+	 			Toast.makeText(preview.getContext(), curLocation.toString(), Toast.LENGTH_SHORT).show();	
+	 		}
+	 		else
+	 		{
+	 			
+	 		}
+	 		
+		}
+
+		@Override
+		public void onProviderDisabled(String provider) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void onProviderEnabled(String provider) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void onStatusChanged(String provider, int status, Bundle extras) {
+			// TODO Auto-generated method stub
+			
+		}
+		
+	};
+	
 	ShutterCallback shutterCallback = new ShutterCallback() {
 		public void onShutter() {
 			Log.d(TAG, "onShutter");

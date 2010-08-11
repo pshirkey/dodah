@@ -10,29 +10,64 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.hardware.Camera;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.hardware.Camera.PreviewCallback;
 import android.hardware.Camera.Size;
+import android.location.Location;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.SurfaceHolder.Callback;
+import android.widget.Toast;
 
 // This is the surface view that holds the 'active' camera image
 public class SearchView extends SurfaceView implements SurfaceHolder.Callback {
 	private static final String TAG="Preview";
+	private double compassDirection;
+	private static SensorManager sensorMan;
+	
+	private Context ctxt;
+	
+	public Location gpsLocation = null;
 	
 	SurfaceHolder mHolder;
 	public Camera camera;
 	
 	SearchView(Context context) {
 		super(context);
-
+        ctxt = context;
+        
 		// Install a SurfaceHolder.Callback so we get notified when the
 		// underlying surface is created and destroyed.
 		mHolder = getHolder();
 		mHolder.addCallback((Callback) this);
 		mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+		
+		// Setup the sensor manger and register a listener for the compass.
+		sensorMan = (SensorManager)context.getSystemService(Context.SENSOR_SERVICE);
+		sensorMan.registerListener(listener, sensorMan.getDefaultSensor(SensorManager.SENSOR_ORIENTATION), SensorManager.SENSOR_DELAY_FASTEST);
 	}
+	
+	// compassDirection is a number representing the bearing or degrees
+	// from north at which your device is pointed. 
+	// A zero value (0) would be due north, 180 would be due south. 
+	SensorEventListener listener = new SensorEventListener(){
+		@Override
+		public void onAccuracyChanged(Sensor sensor, int accuracy) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void onSensorChanged(SensorEvent event) {
+			 float vals[] = event.values;   
+			 compassDirection = vals[0];
+			
+		}
+	};
 
 	public void surfaceCreated(SurfaceHolder holder) {
 		// The Surface has been created, acquire the camera and tell it where
@@ -78,7 +113,7 @@ public class SearchView extends SurfaceView implements SurfaceHolder.Callback {
 	}
 
 	// Method getOptimalPreviewSize() found at:
-	// tp://developer.android.com/resources/samples/ApiDemos/src/com/example/android/apis/graphics/CameraPreview.html
+	// http://developer.android.com/resources/samples/ApiDemos/src/com/example/android/apis/graphics/CameraPreview.html
 	private Size getOptimalPreviewSize(List<Size> sizes, int w, int h) 
 	{
         final double ASPECT_TOLERANCE = 0.05;
@@ -134,5 +169,6 @@ public class SearchView extends SurfaceView implements SurfaceHolder.Callback {
 		Log.d(TAG, "draw");
 		canvas.drawText("PREVIEW", canvas.getWidth() / 2,
 				canvas.getHeight() / 2, p);
+		
 	}
 }
