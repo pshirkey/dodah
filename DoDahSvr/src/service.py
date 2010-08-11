@@ -23,6 +23,9 @@ import base
 
 class ServiceBase(base.Base):
     
+    def __init__(self):
+        self.user = None
+        
     def post(self):
         access_token = self.param('access_token')
         service_client = self.param('service_client')
@@ -30,6 +33,7 @@ class ServiceBase(base.Base):
             token = models.AccessToken.valid(access_token)
             client = models.ServiceClient.valid(service_client)
             if token and client:
+                self.user = token.user
                 models.ServiceLog.create(self.__class__.__name__, client, token)
                 self.do_post()
             else:
@@ -130,6 +134,7 @@ class StartSearch(ServiceBase):
                 return
             
             if location:
+                models.UserLog.create(self.user, 'Started Searching for DoDads at %s' % location.name, location=location)
                 item = location.get_available_item()
                 if item:
                     self.write_json([{ 'status':'success'},item.to_json_object()])

@@ -402,5 +402,16 @@ class Item(db.Model):
     def to_json_object(self):
         return {'code':self.code, 'difficulty':self.difficulty.to_json_object(), 'details':self.details, 'name':self.name, 'key':str(self.key()) }
     
+class UserLog(db.Model):   
+    created = db.DateTimeProperty(auto_now_add=True)
+    updated = db.DateTimeProperty(auto_now=True)
+    user = db.ReferenceProperty(User, required=True, collection_name="log")
+    location = db.ReferenceProperty(Location, collection_name='user_logs')
+    item = db.ReferenceProperty(Item, collection_name="user_log")
+    activity = db.StringProperty() 
     
+    @classmethod
+    def create(cls, user, activity, location=None, item=None):
+        UserLog(user=user, activity=activity, location=location, item=item).put()
+
             
