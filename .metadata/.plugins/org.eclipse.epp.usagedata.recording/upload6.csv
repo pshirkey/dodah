@@ -1,0 +1,26 @@
+what,kind,bundleId,bundleVersion,description,time
+started,bundle,org.eclipse.wst.ws.service.policy,1.0.103.v200905151848,"org.eclipse.wst.ws.service.policy",1281505315887
+started,bundle,org.eclipse.wst.command.env,1.0.408.v200903110045,"org.eclipse.wst.command.env",1281505315927
+started,bundle,org.eclipse.wst.ws,1.1.103.v200903111822,"org.eclipse.wst.ws",1281505315928
+started,bundle,org.eclipse.compare,3.5.2.r35x_20100113-0800,"org.eclipse.compare",1281505316062
+deactivated,workbench,org.eclipse.ui.workbench,3.5.2.M20100113-0800,"",1281505318784
+activated,workbench,org.eclipse.ui.workbench,3.5.2.M20100113-0800,"",1281505324185
+error,log,,,"The project description file (.project) for 'DoDah' is missing.  This file contains important information about the project.  The project will not function properly until this file is restored.",1281505324222
+error,log,,,"Problems occurred opening the selected resources.",1281505324247
+deactivated,workbench,org.eclipse.ui.workbench,3.5.2.M20100113-0800,"",1281505324833
+activated,workbench,org.eclipse.ui.workbench,3.5.2.M20100113-0800,"",1281505330437
+started,bundle,org.eclipse.ltk.core.refactoring,3.5.0.v20090513-2000,"org.eclipse.ltk.core.refactoring",1281505333192
+started,bundle,org.eclipse.ltk.ui.refactoring,3.4.101.r352_v20100209,"org.eclipse.ltk.ui.refactoring",1281505333194
+deactivated,workbench,org.eclipse.ui.workbench,3.5.2.M20100113-0800,"",1281505333297
+started,bundle,com.android.ide.eclipse.ddms,0.9.7.v201005071157-36220,"com.android.ide.eclipse.ddms",1281505335256
+started,bundle,com.android.ide.eclipse.adt,0.9.7.v201005071157-36220,"com.android.ide.eclipse.adt",1281505335438
+activated,workbench,org.eclipse.ui.workbench,3.5.2.M20100113-0800,"",1281505338543
+executed,command,org.eclipse.ltk.ui.refactoring,3.4.101.r352_v20100209,"org.eclipse.ltk.ui.refactoring.commands.deleteResources",1281505338563
+executed,command,org.eclipse.ui,3.5.2.M20100120-0800,"org.eclipse.ui.edit.delete",1281505338563
+deactivated,workbench,org.eclipse.ui.workbench,3.5.2.M20100113-0800,"",1281505342492
+activated,workbench,org.eclipse.ui.workbench,3.5.2.M20100113-0800,"",1281505344191
+executed,command,org.eclipse.ltk.ui.refactoring,3.4.101.r352_v20100209,"org.eclipse.ltk.ui.refactoring.commands.deleteResources",1281505344210
+executed,command,org.eclipse.ui,3.5.2.M20100120-0800,"org.eclipse.ui.edit.delete",1281505344210
+deactivated,workbench,org.eclipse.ui.workbench,3.5.2.M20100113-0800,"",1281505364213
+started,bundle,org.eclipse.jst.servlet.ui,1.1.301.v200908101600,"org.eclipse.jst.servlet.ui",1281505377169
+activated,workbench,org.eclipse.ui.workbench,3.5.2.M20100113-0800,"",1281505377316

@@ -1,0 +1,17 @@
+what,kind,bundleId,bundleVersion,description,time
+stopped,bundle,org.eclipse.wst.common.snippets,1.1.301.v201001280015,"org.eclipse.wst.common.snippets",1281505424109
+stopped,bundle,org.eclipse.wst.internet.monitor.ui,1.0.305.v20100123,"org.eclipse.wst.internet.monitor.ui",1281505424109
+stopped,bundle,org.eclipse.ui.ide,3.5.2.M20100113-0800,"org.eclipse.ui.ide",1281505424109
+stopped,bundle,org.eclipse.gef,3.5.1.v20090910-2020,"org.eclipse.gef",1281505424109
+stopped,bundle,org.eclipse.datatools.capabilities,1.0.0.v20090611-0411,"org.eclipse.datatools.capabilities",1281505424109
+stopped,bundle,org.eclipse.datatools.enablement.ibm.ui,1.0.0.v200906020900,"org.eclipse.datatools.enablement.ibm.ui",1281505424110
+stopped,bundle,org.eclipse.rse.services.dstore,3.1.1.v200909160005,"org.eclipse.rse.services.dstore",1281505424110
+stopped,bundle,org.eclipse.dstore.core,3.1.1.v200909160005,"org.eclipse.dstore.core",1281505424110
+stopped,bundle,org.eclipse.dstore.extra,2.1.101.v200907301400,"org.eclipse.dstore.extra",1281505424110
+stopped,bundle,org.eclipse.equinox.p2.ui.sdk,1.0.100.v20090520-1905,"org.eclipse.equinox.p2.ui.sdk",1281505424110
+stopped,bundle,org.eclipse.equinox.p2.ui.sdk.scheduler,1.0.0.v20090520-1905,"org.eclipse.equinox.p2.ui.sdk.scheduler",1281505424110
+stopped,bundle,org.eclipse.wst.server.discovery,1.0.1.v20100210,"org.eclipse.wst.server.discovery",1281505424111
+stopped,bundle,org.eclipse.equinox.p2.ui,1.0.101.R35x_v20090819,"org.eclipse.equinox.p2.ui",1281505424111
+stopped,bundle,org.eclipse.equinox.security.ui,1.0.100.v20090520-1800,"org.eclipse.equinox.security.ui",1281505424111
+stopped,bundle,org.eclipse.tm.terminal.view,2.0.101.v200907301400,"org.eclipse.tm.terminal.view",1281505424111
+stopped,bundle,org.eclipse.tm.terminal,3.0.2.R31x_v201002160030,"org.eclipse.tm.terminal",1281505424111
