@@ -146,14 +146,87 @@ class StartSearch(ServiceBase):
         else:
             self.write_error("Missing Location Key")
             
+class Found(ServiceBase):
+    
+    url = "/service/found"
+    
+    def do_post(self):
+        item_key = self.param('item_key')
+        if item_key:
+            item = db.get(item_key)
+            if item:
+                item.found_user = self.user
+                item.found_date_time = datetime.datetime.now()
+                item.save()
+                models.UserLog.create(self.user, "Found '%s' for DoDads at %s" % ( item.name, item.location.name ), location=item.location)
+                self.write_json([{ 'status':'success'}])
+            else:
+                self.write_error("Invalid Item Key")
+        else:
+            self.write_error("Missing Item Key")
+            
+            
+class Redeem(ServiceBase):
+    
+    url = "/service/redeem"
+    
+    def do_post(self):
+        item_key = self.param('item_key')
+        if item_key:
+            item = db.get(item_key)
+            if item:
+                item.redeemed = True
+                item.save()
+                self.write_json([{ 'status':'success'}])
+            else:
+                self.write_error("Invalid Item Key")
+        else:
+            self.write_error("Missing Item Key")          
                 
+class WhatsAroundMe(ServiceBase):
+    
+    url = "/service/whatsaroundme"
+    
+    def do_post(self):
+        address = self.param('address')
+        lat = self.param('lat')
+        lon = self.param('lon')
+        miles = self.request.get('miles', default_value=10)
+        max_results = self.request.get('max_results', default_value=10)
+        geoPoint = None
+        try:
+            if address:
+                try:
+                    gmaps = GoogleMaps(self.enviroment.google_maps_key)   
+                    lat, lon = gmaps.address_to_latlng(address)
+                except:
+                    self.write_error('Cannot get position from address')
+                    return
+            geoPoint = db.GeoPt(lat, lon)
+        except:
+            self.write_error('Error validating position')
+            return
+        
+        if geoPoint:
+            meters = float(miles) * base.METERS_IN_MILE        
+            locations = models.Location.proximity_fetch( models.Location.all(), geoPoint, int(max_results), meters )
+            if locations and len(locations) > 0:
+                json = [{ 'status':'success', }]
+                for loc in locations:             
+                    json.append(loc.to_json_object())
+                self.write_json(json)
+            else:
+                self.write_error("No Locations within %s miles" % miles)
             
      
 application = webapp.WSGIApplication([
                                       (Authenticate.url, Authenticate),
                                       (CreateAccount.url, CreateAccount),
                                       (GetDifficulties.url, GetDifficulties),
-                                      (StartSearch.url, StartSearch)                                                         
+                                      (StartSearch.url, StartSearch),
+                                      (Found.url, Found),
+                                      (Redeem.url, Redeem),
+                                      (WhatsAroundMe.url, WhatsAroundMe)                                                       
                                      ], debug=True)
 
 

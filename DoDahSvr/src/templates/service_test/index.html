@@ -127,7 +127,7 @@
 			 <li>client_key( required )</li>
 			 <li>access_token ( required )</li>
 			 <li>location_key( required )</li>
-			 <li>returns list of difficulties and times or error</li>
+			 <li>returns an item to find or error</li>
 		</ul>
 		<div class="section">
 			<label for="name">Access Token:</label>
@@ -145,6 +145,109 @@
 	<h1>StartSearch - Result</h1>
         <div id="startsearchreturn" name="startsearchreturn"></div>
 	</div>
+	
+	
+	<div class="mainColumn" style="border:solid;padding:30px;margin:30px;"> 
+	<form id="foundform" name="foundform" >
+		<input type="hidden" id="service_client" name="service_client" value="882AF324A4DC11DFB3BABF3DE0D72085"/>
+		<h1>Found</h1>
+		<ul>
+			 <li>client_key( required )</li>
+			 <li>access_token ( required )</li>
+			 <li>item_key( required )</li>
+			 <li>returns success or error</li>
+		</ul>
+		<div class="section">
+			<label for="name">Access Token:</label>
+			<input type="text" id="access_token" name="access_token" value="{{test_user_access_token}}"/>
+		</div>
+		<div class="section">
+			<label for="name">Item Key:</label>
+			<input type="text" id="item_key" name="item_key" value=""/>
+		</div>
+			
+	</form>	
+	<div><button id="foundbutton" name="foundbutton">Execute</button></div>	
+	</div>
+	<div class="mainColumn" id="foundresult" name="foundresult" style="border:solid;padding:30px;margin:30px;display:none"> 
+	<h1>Found - Result</h1>
+        <div id="foundreturn" name="foundreturn"></div>
+	</div>
+	
+	<div class="mainColumn" style="border:solid;padding:30px;margin:30px;"> 
+	<form id="redeemform" name="redeemform" >
+		<input type="hidden" id="service_client" name="service_client" value="882AF324A4DC11DFB3BABF3DE0D72085"/>
+		<h1>Redeem</h1>
+		<ul>
+			 <li>client_key( required )</li>
+			 <li>access_token ( required )</li>
+			 <li>item_key( required )</li>
+			 <li>returns success or error</li>
+		</ul>
+		<div class="section">
+			<label for="name">Access Token:</label>
+			<input type="text" id="access_token" name="access_token" value="{{test_user_access_token}}"/>
+		</div>
+		<div class="section">
+			<label for="name">Item Key:</label>
+			<input type="text" id="item_key" name="item_key" value=""/>
+		</div>
+			
+	</form>	
+	<div><button id="redeembutton" name="redeembutton">Execute</button></div>	
+	</div>
+	<div class="mainColumn" id="redeemresult" name="redeemresult" style="border:solid;padding:30px;margin:30px;display:none"> 
+	<h1>Redeem - Result</h1>
+        <div id="redeemreturn" name="redeemreturn"></div>
+	</div>
+	
+	<div class="mainColumn" style="border:solid;padding:30px;margin:30px;"> 
+	<form id="aroundform" name="aroundform" >
+		<input type="hidden" id="service_client" name="service_client" value="882AF324A4DC11DFB3BABF3DE0D72085"/>
+		<h1>WhatsAroundMe</h1>
+		<ul>
+			 <li>client_key( required )</li>
+			 <li>access_token ( required )</li>
+			 <li>address( optional )</li>
+			 <li>lat( optional )</li>
+			 <li>lon( optional )</li>
+			 <li>max results( optional, defaults to 10 )</li>
+			 <li>miles( optional, defaults to 10 )</li>
+			 <li>returns list of locations around address or error</li>
+		</ul>
+		<div class="section">
+			<label for="name">Access Token:</label>
+			<input type="text" id="access_token" name="access_token" value="{{test_user_access_token}}"/>
+		</div>
+		<div class="section">
+			<label for="name">Address:</label>
+			<input type="text" id="address" name="address" value=""/>
+		</div>
+		<div class="section">
+			<label for="name">Latitude:</label>
+			<input type="text" id="lat" name="lat" value=""/>
+		</div>
+		<div class="section">
+			<label for="name">Longitude:</label>
+			<input type="text" id="lon" name="lon" value=""/>
+		</div>
+		<div class="section">
+			<label for="name">Miles:</label>
+			<input type="text" id="miles" name="miles" value="10"/>
+		</div>
+		<div class="section">
+			<label for="name">Max Results:</label>
+			<input type="text" id="max_results" name="max_results" value="10"/>
+		</div>
+			
+	</form>	
+	<div><button id="aroundbutton" name="aroundbutton">Execute</button></div>	
+	</div>
+	<div class="mainColumn" id="aroundresult" name="aroundresult" style="border:solid;padding:30px;margin:30px;display:none"> 
+	<h1>WhatsAroundMe - Result</h1>
+        <div id="aroundreturn" name="aroundreturn"></div>
+	</div>
+	
 	
 	
 	
@@ -203,6 +306,51 @@
 								success: function (data) {
 									$('#startsearchresult').fadeIn(200, function () {
 										$('#startsearchreturn').html(data).fadeIn(200);
+									});
+								},
+							});
+			});
+			
+			$("#foundbutton").button();
+			$("#foundbutton").click(function (e){				
+				$.ajax({
+								url: '/service/found',
+								data: $('#foundform').serialize(),
+								type: 'post',
+								cache: false,
+								success: function (data) {
+									$('#foundresult').fadeIn(200, function () {
+										$('#foundreturn').html(data).fadeIn(200);
+									});
+								},
+							});
+			});
+			
+			$("#redeembutton").button();
+			$("#redeembutton").click(function (e){				
+				$.ajax({
+								url: '/service/redeem',
+								data: $('#redeemform').serialize(),
+								type: 'post',
+								cache: false,
+								success: function (data) {
+									$('#redeemresult').fadeIn(200, function () {
+										$('#redeemreturn').html(data).fadeIn(200);
+									});
+								},
+							});
+			});
+			
+			$("#aroundbutton").button();
+			$("#aroundbutton").click(function (e){				
+				$.ajax({
+								url: '/service/whatsaroundme',
+								data: $('#aroundform').serialize(),
+								type: 'post',
+								cache: false,
+								success: function (data) {
+									$('#aroundresult').fadeIn(200, function () {
+										$('#aroundreturn').html(data).fadeIn(200);
 									});
 								},
 							});

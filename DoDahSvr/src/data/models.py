@@ -293,6 +293,14 @@ class Category(db.Model):
     def __str__(self):
         return self.name
     
+    def to_json_object(self):
+        parent_name = ""
+        parent = self.parent_category
+        while parent:            
+            parent_name = "%s/%s" % (parent.name, parent_name )
+            parent = parent.parent_category 
+        return {'name':self.name, 'description':self.description,'parent':parent_name }
+    
 class Location(geomodel.GeoModel):
     created = db.DateTimeProperty(auto_now_add=True)
     updated = db.DateTimeProperty(auto_now=True)
@@ -334,6 +342,23 @@ class Location(geomodel.GeoModel):
                         return item 
             
         return None
+    
+    def to_json_object(self):
+        return {'name':self.name, 
+                'description':self.description, 
+                'address':self.get_address(), 
+                'geo':"%s,%s" % ( self.location.lat, self.location.lon ),
+                'category':self.category.to_json_object(), 
+                'rating':self.rating,
+                'items':self.available_item_count()                
+                }
+        
+    def available_item_count(self):
+        count = 0
+        for i in self.items:
+            if i.active and not i.found() and not i.expired():
+                count = count+1
+        return count        
     
     def _check_item(self, item):
         if item and item.active and not item.found_user:
@@ -394,6 +419,7 @@ class Item(db.Model):
     name = db.StringProperty(default="")
     details = db.TextProperty(default="")
     found_user = db.ReferenceProperty(User, collection_name='found_items')
+    found_date_time = db.DateTimeProperty()
     redeemed = db.BooleanProperty(default=False)
     expires = db.DateProperty()
     active = db.BooleanProperty(default=False)
@@ -401,6 +427,17 @@ class Item(db.Model):
     
     def to_json_object(self):
         return {'code':self.code, 'difficulty':self.difficulty.to_json_object(), 'details':self.details, 'name':self.name, 'key':str(self.key()) }
+    
+    def found(self):
+        return ( self.found_user is not None )
+    
+    def expired(self):
+        delta = datetime.date.today() - self.expires
+        return ( delta.days > 0 )
+    
+    def done(self):
+        return ( self.found() or self.expired() )
+    
     
 class UserLog(db.Model):   
     created = db.DateTimeProperty(auto_now_add=True)

@@ -88,6 +88,33 @@
 	<th>&nbsp;</th>
     </tr>
     {% for item in loc.items %}
+	{% if item.done %}
+	  <tr {% if item.found %} style="background-color:#00cc99;" {% else %} style="background-color:#ccff77;" {% endif %}>
+	  	<td>{{ item.created|date:"m/d/Y" }}</td>
+			<td>{{ item.code }}</td>
+			<td>{{ item.name }}</td>
+			<td>{{ item.details }}</td>
+			<td>
+				{% for d in diffs %}
+				{% ifequal d.key item.difficulty.key %} {{ d.name }} {% endifequal %}
+				{% endfor %}
+			</td>
+			<td>{% if item.found %} found {% else %} expired {% endif %}</td>
+			{% if item.found %}
+			<td>Yes</td>
+			{% else %}
+			<td>No</td>
+			{% endif %}
+			{% if item.redeemed %}
+            <td>Yes</td>
+            {% else %}
+            <td>No</td>
+            {% endif %}
+			<td>{{ item.expires|date:"m/d/Y" }}</td>
+			<td>&nbsp;</td>
+	  
+	  </tr>
+	{% else %}
     <tr>
         <form action="/saveitem" action="post">
         	<input type="hidden" name="id" id="id" value="{{ item.key }}"/>
@@ -118,6 +145,7 @@
 			<td><input type="submit" value="Save"/></td>			
         </form> 
     </tr>
+	{% endif %}
     {% endfor %}
     </table>
 	<br/>
