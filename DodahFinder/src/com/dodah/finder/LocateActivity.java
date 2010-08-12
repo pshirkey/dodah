@@ -12,6 +12,10 @@ import java.io.IOException;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.BlurMaskFilter;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.hardware.Camera;
 import android.hardware.Camera.PictureCallback;
 import android.hardware.Camera.ShutterCallback;
@@ -19,6 +23,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.Toast;
@@ -27,10 +32,12 @@ import android.widget.Toast;
 public class LocateActivity extends Activity {
 	
 	private long GPSUpdateRate = 100; // ms
+	private LocationListener gpsListener;
 	
 	private static final String TAG = "Dodah Search";
 	private Camera camera;
 	private SearchView preview;
+	private LocationManager locMan;
 	
 	Button buttonClick;
 
@@ -38,8 +45,14 @@ public class LocateActivity extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		// camera preview
 		setContentView(R.layout.main);
 
+		// Compose the overlay target image onto the camera preview.
+		TargetOverlayView targetViewOverlay = new TargetOverlayView(this);
+		addContentView(targetViewOverlay, new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+		
 		preview = new SearchView(this);
 		((FrameLayout) findViewById(R.id.preview)).addView(preview);
 
@@ -51,18 +64,18 @@ public class LocateActivity extends Activity {
 			}
 		});
 
-	 LocationManager locMan;
-	 
-     locMan = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
-     locMan.requestLocationUpdates(LocationManager.GPS_PROVIDER, GPSUpdateRate, 1, gpsListener);   
+		gpsListener = new MyLocationListener();
+		 
+		locMan = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+     	locMan.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, gpsListener);   
 
 		Log.d(TAG, "onCreate'd");
 	}
-
+	
 	// GPS listener
-	LocationListener gpsListener = new LocationListener(){
-		Location curLocation;
-		boolean locationChanged = false;
+	private class MyLocationListener implements LocationListener{
+		private Location curLocation;
+		private boolean locationChanged = false;
 		
 		@Override
 		public void onLocationChanged(Location location) {
@@ -83,7 +96,8 @@ public class LocateActivity extends Activity {
 	     	
 	 		if(locationChanged)
 	 		{
-	 			Toast.makeText(preview.getContext(), curLocation.toString(), Toast.LENGTH_SHORT).show();	
+	 			Toast.makeText(preview.getContext(), "Location changed : Lat: " + curLocation.getLatitude() + 
+	                    " Long: " + curLocation.getLongitude(), Toast.LENGTH_LONG).show();	
 	 		}
 	 		else
 	 		{
