@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    >
+
+<TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Username" android:id="@+id/tvUserName"></TextView>
+<EditText android:layout_width="wrap_content" android:layout_height="wrap_content" android:width="170px" android:id="@+id/etUserName"></EditText>
+<TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Password" android:id="@+id/tvPassword"></TextView>
+<EditText android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/etPassword" android:width="170px" android:inputType="textPassword"></EditText>
+
+
+</LinearLayout>
