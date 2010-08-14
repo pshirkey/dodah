@@ -7,6 +7,5 @@
 
     <uses-library android:name="android.test.runner" />
     </application>
-
-    <instrumentation android:targetPackage="com.dodah.finder" android:name="android.test.InstrumentationTestRunner" />
-</manifest> 
+    <instrumentation android:name="android.test.InstrumentationTestRunner" android:targetPackage="com.dodah.finder" android:label="Tests for DoDah App" />
+</manifest>
