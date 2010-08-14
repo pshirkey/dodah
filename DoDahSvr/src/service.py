@@ -45,10 +45,10 @@ class ServiceBase(base.Base):
         pass
     
     def write_error(self, message ):
-        self.response.out.write(simplejson.dumps([{ 'status':'error','error_message':message }]))
+        self.response.out.write(simplejson.dumps({ 'result' : { 'status':'error','error_message':message }} ))
     
-    def write_json(self, json_object_array): 
-        self.response.out.write(simplejson.dumps(json_object_array))
+    def write_success(self, response_object): 
+        self.response.out.write(simplejson.dumps({ 'result' : { 'status':'success','error_message':'', 'response':response_object }}))
     
     
 class Authenticate(ServiceBase):
@@ -69,7 +69,7 @@ class Authenticate(ServiceBase):
                         access_token = models.AccessToken.create_for_user(user)
                         log.access_token = access_token
                         log.save()
-                        self.write_json([{ 'status':'success'},{'access_token':access_token.token }])
+                        self.write_success({'access_token':access_token.token })
                     else:
                         self.write_error('invalid email or password')
                 else:
@@ -101,7 +101,7 @@ class CreateAccount(ServiceBase):
                             access_token = models.AccessToken.create_for_user(user)
                             log.access_token = access_token
                             log.save()
-                            self.write_json([{ 'status':'success'},{'access_token':access_token.token }])
+                            self.write_success({'access_token':access_token.token })
                         else:
                             self.write_error("Unable to create account")
             else:
@@ -118,7 +118,7 @@ class GetDifficulties(ServiceBase):
         models.Difficulty.load()
         for d in models.Difficulty.all():             
             json.append(d.to_json_object())
-        self.write_json(json)
+        self.write_success(json)
                 
 class StartSearch(ServiceBase):
     
@@ -137,7 +137,7 @@ class StartSearch(ServiceBase):
                 models.UserLog.create(self.user, 'Started Searching for DoDads at %s' % location.name, location=location)
                 item = location.get_available_item()
                 if item:
-                    self.write_json([{ 'status':'success'},item.to_json_object()])
+                    self.write_success(item.to_json_object())
                 else:
                     self.write_error('No Items available')
             else:
@@ -159,7 +159,7 @@ class Found(ServiceBase):
                 item.found_date_time = datetime.datetime.now()
                 item.save()
                 models.UserLog.create(self.user, "Found '%s' for DoDads at %s" % ( item.name, item.location.name ), location=item.location)
-                self.write_json([{ 'status':'success'}])
+                self.write_success([])
             else:
                 self.write_error("Invalid Item Key")
         else:
@@ -177,7 +177,7 @@ class Redeem(ServiceBase):
             if item:
                 item.redeemed = True
                 item.save()
-                self.write_json([{ 'status':'success'}])
+                self.write_success([])
             else:
                 self.write_error("Invalid Item Key")
         else:
@@ -211,10 +211,10 @@ class WhatsAroundMe(ServiceBase):
             meters = float(miles) * base.METERS_IN_MILE        
             locations = models.Location.proximity_fetch( models.Location.all(), geoPoint, int(max_results), meters )
             if locations and len(locations) > 0:
-                json = [{ 'status':'success', }]
+                json = []
                 for loc in locations:             
                     json.append(loc.to_json_object())
-                self.write_json(json)
+                self.write_success(json)
             else:
                 self.write_error("No Locations within %s miles" % miles)
             
